@@ -29,7 +29,7 @@
 
   
   
-  <link href="/blog/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
@@ -63,9 +63,9 @@
 
 
 
-<link href="/blog/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
 
-<link href="/blog/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="并发编程,网络编程," />
@@ -77,7 +77,7 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.ico?v=5.0.1" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
 
 
 
@@ -93,7 +93,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 子进程负责处理这个fd(file de">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于预线程化的并发服务器">
-<meta property="og:url" content="http://yjp999.github.io/blog/2016/09/27/prethreaded-server/index.html">
+<meta property="og:url" content="http://yoursite.com/2016/09/27/prethreaded-server/index.html">
 <meta property="og:site_name" content="yjp's tictoc">
 <meta property="og:description" content="Background今年暑假读CSAPP第12章并发编程时看到的一个demo
 这个demo不但涉及到了服务器的开发，也包括了并发编程和网络编程相关知识
@@ -102,7 +102,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 父进程接受监听描述符，子进程处理连接描述符
 父进程accept以后fork一个子进程，父进程接着accept
 子进程负责处理这个fd(file de">
-<meta property="og:image" content="http://yjp999.github.io/blog/blog/2016/09/27/prethreaded-server/prethreaded_organization.png">
+<meta property="og:image" content="http://yoursite.com/2016/09/27/prethreaded-server/prethreaded_organization.png">
 <meta property="og:updated_time" content="2016-09-28T01:57:00.364Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于预线程化的并发服务器">
@@ -113,7 +113,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 父进程接受监听描述符，子进程处理连接描述符
 父进程accept以后fork一个子进程，父进程接着accept
 子进程负责处理这个fd(file de">
-<meta name="twitter:image" content="http://yjp999.github.io/blog/blog/2016/09/27/prethreaded-server/prethreaded_organization.png">
+<meta name="twitter:image" content="http://yoursite.com/2016/09/27/prethreaded-server/prethreaded_organization.png">
 
 
 
@@ -134,7 +134,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 
 
 
-  <link rel="canonical" href="http://yjp999.github.io/blog/2016/09/27/prethreaded-server/"/>
+  <link rel="canonical" href="http://yoursite.com/2016/09/27/prethreaded-server/"/>
 
   <title> 基于预线程化的并发服务器 | yjp's tictoc </title>
 </head>
@@ -165,7 +165,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
   
 
   <div class="custom-logo-site-title">
-    <a href="/blog/"  class="brand" rel="start">
+    <a href="/"  class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <span class="site-title">yjp's tictoc</span>
       <span class="logo-line-after"><i></i></span>
@@ -190,7 +190,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
       
         
         <li class="menu-item menu-item-home">
-          <a href="/blog/" rel="section">
+          <a href="/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -200,7 +200,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/blog/categories" rel="section">
+          <a href="/categories" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -210,7 +210,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
       
         
         <li class="menu-item menu-item-about">
-          <a href="/blog/about" rel="section">
+          <a href="/about" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -220,7 +220,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/blog/archives" rel="section">
+          <a href="/archives" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -230,7 +230,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/blog/tags" rel="section">
+          <a href="/tags" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -302,7 +302,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/blog/categories/编程/" itemprop="url" rel="index">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
                     <span itemprop="name">编程</span>
                   </a>
                 </span>
@@ -365,7 +365,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 <li>主线程不断地接受来自客户端的连接请求，并将得到的连接描述符放在一个<code>有限缓冲区</code>中</li>
 <li>每一个工作者线程反复地从共享缓冲区中取出描述符来为客户端服务，然后等待下一个fd</li>
 </ul>
-<img src="/blog/2016/09/27/prethreaded-server/prethreaded_organization.png" alt="The Architecture" title="The Architecture">
+<img src="/2016/09/27/prethreaded-server/prethreaded_organization.png" alt="The Architecture" title="The Architecture">
 <p>为了实现这一目标，我们首先需要开发一个SBUF包，它是用来构造生产者-消费者程序的。SBUF操作类型为sbuf_t的有限缓冲区，SBUF包的头文件如下(sbuf.h)</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> __SBUF_H__</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __SBUF_H__</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"csapp.h"</span></span></div><div class="line"></div><div class="line"><span class="comment">/* $begin sbuft */</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">    <span class="keyword">int</span> *buf;          <span class="comment">/* Buffer array */</span>         </div><div class="line">    <span class="keyword">int</span> n;             <span class="comment">/* Maximum number of slots */</span></div><div class="line">    <span class="keyword">int</span> front;         <span class="comment">/* buf[(front+1)%n] is first item */</span></div><div class="line">    <span class="keyword">int</span> rear;          <span class="comment">/* buf[rear%n] is last item */</span></div><div class="line">    <span class="keyword">sem_t</span> mutex;       <span class="comment">/* Protects accesses to buf */</span></div><div class="line">    <span class="keyword">sem_t</span> slots;       <span class="comment">/* Counts available slots */</span></div><div class="line">    <span class="keyword">sem_t</span> items;       <span class="comment">/* Counts available items */</span></div><div class="line">&#125; <span class="keyword">sbuf_t</span>;</div><div class="line"><span class="comment">/* $end sbuft */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_init</span><span class="params">(<span class="keyword">sbuf_t</span> *sp, <span class="keyword">int</span> n)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_deinit</span><span class="params">(<span class="keyword">sbuf_t</span> *sp)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_insert</span><span class="params">(<span class="keyword">sbuf_t</span> *sp, <span class="keyword">int</span> item)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sbuf_remove</span><span class="params">(<span class="keyword">sbuf_t</span> *sp)</span></span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* __SBUF_H__ */</span></span></div></pre></td></tr></table></figure>
 <p>项目存放在一个动态分配的n项整数数组中，front和rear索引值记录该数组中的第一项和最后一项。三个信号量同步对缓冲区的访问，mutex信号量提供互斥的缓冲区访问，slots和items信号量分别记录空槽位和可用项目的数量。</p>
@@ -400,9 +400,9 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
       
         <div class="post-tags">
           
-            <a href="/blog/tags/并发编程/" rel="tag">#并发编程</a>
+            <a href="/tags/并发编程/" rel="tag">#并发编程</a>
           
-            <a href="/blog/tags/网络编程/" rel="tag">#网络编程</a>
+            <a href="/tags/网络编程/" rel="tag">#网络编程</a>
           
         </div>
       
@@ -411,7 +411,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/blog/2016/04/21/spider-js/" rel="next" title="爬虫系列（1）——解析JS">
+              <a href="/2016/04/21/spider-js/" rel="next" title="爬虫系列（1）——解析JS">
                 <i class="fa fa-chevron-left"></i> 爬虫系列（1）——解析JS
               </a>
             
@@ -477,14 +477,14 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/blog/images/yjp.jpg"
+               src="/images/yjp.jpg"
                alt="cloudyang" />
           <p class="site-author-name" itemprop="name">cloudyang</p>
           <p class="site-description motion-element" itemprop="description">记录我的点滴，包括但不限于编程，电影，生活。</p>
         </div>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
-            <a href="/blog/archives">
+            <a href="/archives">
               <span class="site-state-item-count">3</span>
               <span class="site-state-item-name">日志</span>
             </a>
@@ -492,7 +492,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 
           
             <div class="site-state-item site-state-categories">
-              <a href="/blog/categories">
+              <a href="/categories">
                 <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">分类</span>
               </a>
@@ -501,7 +501,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 
           
             <div class="site-state-item site-state-tags">
-              <a href="/blog/tags">
+              <a href="/tags">
                 <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">标签</span>
               </a>
@@ -638,53 +638,53 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 
 
   
-  <script type="text/javascript" src="/blog/vendors/jquery/index.js?v=2.1.3"></script>
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
 
   
-  <script type="text/javascript" src="/blog/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
-  <script type="text/javascript" src="/blog/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
   
-  <script type="text/javascript" src="/blog/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
 
   
-  <script type="text/javascript" src="/blog/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
   
-  <script type="text/javascript" src="/blog/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-
-
-  
-
-
-  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.0.1"></script>
-
-  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.0.1"></script>
-
-
-
-  
-  
-
-
-  <script type="text/javascript" src="/blog/js/src/affix.js?v=5.0.1"></script>
-
-  <script type="text/javascript" src="/blog/js/src/schemes/pisces.js?v=5.0.1"></script>
-
-
-
-  
-  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.0.1"></script>
-<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.0.1"></script>
-
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 
   
 
 
-  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.0.1"></script>
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
 
 
 

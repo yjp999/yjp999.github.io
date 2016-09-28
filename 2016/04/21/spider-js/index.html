@@ -98,9 +98,9 @@
 广度搜索 ：例如一些著名搜索引擎Google、百度、必应、雅虎等，它们都属于广度搜索爬虫，原理就是每将一个页面所有的链接拿下来后，去遍历所有的链接，再按照上述步骤不断抓取页面直到找到相关的关键词，并按相关度对页面进行排序
 
 垂直搜索 ：简">
-<meta property="og:image" content="http://yjp999.github.io/blog/spider-js/review.jpg">
-<meta property="og:image" content="http://yjp999.github.io/blog/spider-js/comments.jpg">
-<meta property="og:updated_time" content="2016-09-27T07:56:28.463Z">
+<meta property="og:image" content="http://yjp999.github.io/blog/blog/2016/04/21/spider-js/review.jpg">
+<meta property="og:image" content="http://yjp999.github.io/blog/blog/2016/04/21/spider-js/comments.jpg">
+<meta property="og:updated_time" content="2016-09-28T01:57:22.524Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="爬虫系列（1）——解析JS">
 <meta name="twitter:description" content="网络爬虫（Web Crawler）也叫网络蜘蛛（Web Spider），蚂蚁，自动检索工具，是一种自动浏览网络的程序，也可称为网络机器人。爬虫主要分为两大类：
@@ -108,7 +108,7 @@
 广度搜索 ：例如一些著名搜索引擎Google、百度、必应、雅虎等，它们都属于广度搜索爬虫，原理就是每将一个页面所有的链接拿下来后，去遍历所有的链接，再按照上述步骤不断抓取页面直到找到相关的关键词，并按相关度对页面进行排序
 
 垂直搜索 ：简">
-<meta name="twitter:image" content="http://yjp999.github.io/blog/spider-js/review.jpg">
+<meta name="twitter:image" content="http://yjp999.github.io/blog/blog/2016/04/21/spider-js/review.jpg">
 
 
 
@@ -289,6 +289,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/blog/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -327,11 +346,17 @@
 <h3 id="方法1：手动解析JS"><a href="#方法1：手动解析JS" class="headerlink" title="方法1：手动解析JS"></a>方法1：手动解析JS</h3><p>这种方法比较耗时同时难度最大，但是一旦分析成功，抓取速度会远远快于方法2，具体原因我会在方法2中说明。下面我会演示一个例子如何去解析动态信息。</p>
 <p>拿抓取<a href="http://slide.ent.sina.com.cn/star/w/slide_4_704_137965.html#p=1" target="_blank" rel="external">高圆圆怀抱干女儿</a>这条新浪新闻举个栗子，这条新闻的评论在源代码中是直接拿不到的，其实新浪所有新闻网页都是不能通过网页源码拿到评论内容的，此时就需要我们去分析网络请求并找出评论的来源。</p>
 <ol>
-<li>得到评论链接<br><img src="spider-js/review.jpg" alt="comments_url"><br>打开F12功能后，点击图中数字1 处的“Network”，查看所有请求信息，这其中包括图片和css文件、Img、JS、以及Doc等所有请求的url，通过图中数字2 处的过滤功能，在数字3 处输入”comment”信息，因为要抓取的是评论内容，所以输入的是comment（仅仅是一种基于经验的猜测），当然也可以下拉评论内容，最后在network中发现评论的来源。回车后发现只剩下了3条Type类型均为script的url，每条都试过之后，发现第二条的url可以打开而且页面内容确实是评论信息。</li>
-<li><p>分析评论链接<br>根据步骤1，我们得到了评论的链接：<br><a href="http://comment5.news.sina.com.cn/page/info?version=1&amp;format=js&amp;channel=yl&amp;newsid=slidenews-album-704-137965&amp;group=1&amp;compress=1&amp;ie=gbk&amp;oe=gbk&amp;page=1&amp;page_size=100&amp;jsvar=requestId_6363077" target="_blank" rel="external">http://comment5.news.sina.com.cn/page/info?version=1&amp;format=js&amp;channel=yl&amp;newsid=slidenews-album-704-137965&amp;group=1&amp;compress=1&amp;ie=gbk&amp;oe=gbk&amp;page=1&amp;page_size=100&amp;jsvar=requestId_6363077</a><br>可以看到url后面有许多参数，其中比较重要的有:<br><strong>format</strong>: js [也可以写成json，即返回的数据格式]<br><strong>newsid</strong>: slidenews-ablum-704-137965 [新闻id，每条新闻的唯一标识]<br><strong>page</strong>: 1 [评论内容的页码，2，3，4…]<br>即我们只要知道每条新闻的id，就可以通过上面这条url得到每条新闻的所有评论内容，在我将format赋值为json后，得到的评论内容如下：<br><img src="spider-js/comments.jpg" alt="comments_content"><br>可以通过上图发现，评论在cmntlist这个列表里，每一条评论的详情又是一个字典，在字典中key为content，对应的value则是评论内容。上图中的json内容之所以能够在浏览器中结构化显示，是因为我使用了一个chrome插件：JSONView。谁用谁知道…</p>
-</li>
-<li><p>小结<br>其实对于有些安全性较高的网站的请求分析起来还是相当复杂和麻烦的，这里的例子比较简单，我也简略了许多内容，所以对于刚刚入手爬虫的同学来说可能还是有点费解的。这些技巧有时候靠直觉和经验，所以只有多多尝试才能掌握这些技能。</p>
-</li>
+<li>得到评论链接</li>
+</ol>
+<img src="/blog/2016/04/21/spider-js/review.jpg" alt="comments_url" title="comments_url">
+<p>打开F12功能后，点击图中数字1 处的“Network”，查看所有请求信息，这其中包括图片和css文件、Img、JS、以及Doc等所有请求的url，通过图中数字2 处的过滤功能，在数字3 处输入”comment”信息，因为要抓取的是评论内容，所以输入的是comment（仅仅是一种基于经验的猜测），当然也可以下拉评论内容，最后在network中发现评论的来源。回车后发现只剩下了3条Type类型均为script的url，每条都试过之后，发现第二条的url可以打开而且页面内容确实是评论信息。</p>
+<ol>
+<li>分析评论链接<br>根据步骤1，我们得到了评论的链接：<br><a href="http://comment5.news.sina.com.cn/page/info?version=1&amp;format=js&amp;channel=yl&amp;newsid=slidenews-album-704-137965&amp;group=1&amp;compress=1&amp;ie=gbk&amp;oe=gbk&amp;page=1&amp;page_size=100&amp;jsvar=requestId_6363077" target="_blank" rel="external">http://comment5.news.sina.com.cn/page/info?version=1&amp;format=js&amp;channel=yl&amp;newsid=slidenews-album-704-137965&amp;group=1&amp;compress=1&amp;ie=gbk&amp;oe=gbk&amp;page=1&amp;page_size=100&amp;jsvar=requestId_6363077</a><br>可以看到url后面有许多参数，其中比较重要的有:<br><strong>format</strong>: js [也可以写成json，即返回的数据格式]<br><strong>newsid</strong>: slidenews-ablum-704-137965 [新闻id，每条新闻的唯一标识]<br><strong>page</strong>: 1 [评论内容的页码，2，3，4…]<br>即我们只要知道每条新闻的id，就可以通过上面这条url得到每条新闻的所有评论内容，在我将format赋值为json后，得到的评论内容如下：</li>
+</ol>
+<img src="/blog/2016/04/21/spider-js/comments.jpg" alt="comments_content" title="comments_content">
+<p>可以通过上图发现，评论在cmntlist这个列表里，每一条评论的详情又是一个字典，在字典中key为content，对应的value则是评论内容。上图中的json内容之所以能够在浏览器中结构化显示，是因为我使用了一个chrome插件：JSONView。谁用谁知道…</p>
+<ol>
+<li>小结<br>其实对于有些安全性较高的网站的请求分析起来还是相当复杂和麻烦的，这里的例子比较简单，我也简略了许多内容，所以对于刚刚入手爬虫的同学来说可能还是有点费解的。这些技巧有时候靠直觉和经验，所以只有多多尝试才能掌握这些技能。</li>
 </ol>
 <h3 id="方法2：用mini浏览器解析JS"><a href="#方法2：用mini浏览器解析JS" class="headerlink" title="方法2：用mini浏览器解析JS"></a>方法2：用mini浏览器解析JS</h3><blockquote>
 <p>其实只要技巧熟练，所有关于ajax生成的动态内容都是可以通过方法1获取到的。但是对于刚开始的爬虫新手来说，方法1有一定的门槛，这时就可以通过方法2来操作。目前有很多这样的浏览器引擎，如主要用于自动化测试的<a href="http://www.seleniumhq.org/" target="_blank" rel="external">Selenuim</a>、没有浏览器界面的<a href="http://phantomjs.org/" target="_blank" rel="external">PhantomJS</a>、<a href="http://htmlunit.sourceforge.net/" target="_blank" rel="external">HtmlUnit</a> 以及<a href="http://casperjs.org/" target="_blank" rel="external">CasperJS</a>，也有很多基于webkit的其他浏览器引擎，也就是说我们可以用这些引擎来渲染js，最后生成DOM树对元素进行操控，但是模拟浏览器环境内存和CPU消耗都非常严重，因此抓取效率将大打折扣。</p>
@@ -462,7 +487,7 @@
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/blog/images/avatar.gif"
+               src="/blog/images/yjp.jpg"
                alt="cloudyang" />
           <p class="site-author-name" itemprop="name">cloudyang</p>
           <p class="site-description motion-element" itemprop="description">记录我的点滴，包括但不限于编程，电影，生活。</p>
@@ -475,6 +500,13 @@
             </a>
           </div>
 
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
           
 
           
@@ -502,6 +534,15 @@
                 </a>
               </span>
             
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/yjp999_cloudyang" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
           
         </div>
 
@@ -509,6 +550,24 @@
         
 
         
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangze01.gitHub.io" title="yangze01" target="_blank">yangze01</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wgqtmac.gitHub.io" title="wgqtmac" target="_blank">wgqtmac</a>
+                </li>
+              
+            </ul>
+          </div>
         
 
       </section>

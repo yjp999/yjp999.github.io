@@ -278,6 +278,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/blog/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -302,51 +321,19 @@
       
         
           
-            <h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>今年暑假读CSAPP第12章并发编程时看到的一个demo</p>
-<p>这个demo不但涉及到了服务器的开发，也包括了并发编程和网络编程相关知识</p>
-<h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>一个服务器必须能够同时服务两个或两个以上的客户端，为了满足这一要求，有以下几种方案</p>
-<ul>
-<li>父进程接受监听描述符，子进程处理连接描述符<ul>
-<li>父进程accept以后fork一个子进程，父进程接着accept</li>
-<li>子进程负责处理这个fd(file descriptor)</li>
-<li>代码实现在<a href="http://www.martinbroadhurst.com/source/forked-server.c.html" target="_blank" rel="external">这里</a></li>
-</ul>
-</li>
-<li>通过I/O多路复用技术实现并发<ul>
-<li>网络客户端发起连接请求</li>
-<li>等待数据到达服务器</li>
-<li>代码实现在<a href="http:/csapp.cs.cmu.edu/2e/ics2/code/conc/select.chttp://csap.cs.cmu.edu/2e/ics2/code/conc/select.c" target="_blank" rel="external">这里</a></li>
-</ul>
-</li>
-<li>基于多线程实现并发服务器</li>
-</ul>
-<p>以上3个方案从理论上来说都可以满足一个服务器同时服务多个客户端的需求，但是从工业的角度来讲，都不大现实。拿第一个方案来说，不现实的三个原因如下：</p>
-<ul>
-<li>每来一个连接就fork一个子进程，开销会很大，在linux系统下，调用fork不会发生地址空间COW(copy on write)，但是会复制父进程的页表。</li>
-<li>进程调度器压力过大。当并发量很大时，系统里有很多的进程，那么绝大部分时间将会花在决定哪一个是下一个运行进程以及上下文切换。</li>
-<li>内存的消耗。父子进程之间需要IPC，而高并发下的IPC所带来的overhead也不可忽略。</li>
-</ul>
-<p>将进程换成线程，虽然可以解决fork产生的问题，但是依旧无法处理调度压力和内存开销的麻烦。然而采用固定数量的线程（线程池）是一个非常不错的选择，这就是下面要提到的“预线程并发”模型。</p>
-<h2 id="Body"><a href="#Body" class="headerlink" title="Body"></a>Body</h2><p>我们使用下图所示的生产者-消费者模型来来降低为每一个新客户端创建一个线程而导致的开销。服务器是由<code>一个主线程</code>和<code>一组工作线程</code>构成的。</p>
-<ul>
-<li>主线程不断地接受来自客户端的连接请求，并将得到的连接描述符放在一个<code>有限缓冲区</code>中</li>
-<li>每一个工作者线程反复地从共享缓冲区中取出描述符来为客户端服务，然后等待下一个fd</li>
-</ul>
-<p><img src="/blog_images/prethreaded-server/prethreaded_organization.png" alt="The Architecture"></p>
-<p>为了实现这一目标，我们首先需要开发一个SBUF包，它是用来构造生产者-消费者程序的。SBUF操作类型为sbuf_t的有限缓冲区，SBUF包的头文件如下(sbuf.h)</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> __SBUF_H__</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __SBUF_H__</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"csapp.h"</span></span></div><div class="line"></div><div class="line"><span class="comment">/* $begin sbuft */</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">    <span class="keyword">int</span> *buf;          <span class="comment">/* Buffer array */</span>         </div><div class="line">    <span class="keyword">int</span> n;             <span class="comment">/* Maximum number of slots */</span></div><div class="line">    <span class="keyword">int</span> front;         <span class="comment">/* buf[(front+1)%n] is first item */</span></div><div class="line">    <span class="keyword">int</span> rear;          <span class="comment">/* buf[rear%n] is last item */</span></div><div class="line">    <span class="keyword">sem_t</span> mutex;       <span class="comment">/* Protects accesses to buf */</span></div><div class="line">    <span class="keyword">sem_t</span> slots;       <span class="comment">/* Counts available slots */</span></div><div class="line">    <span class="keyword">sem_t</span> items;       <span class="comment">/* Counts available items */</span></div><div class="line">&#125; <span class="keyword">sbuf_t</span>;</div><div class="line"><span class="comment">/* $end sbuft */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_init</span><span class="params">(<span class="keyword">sbuf_t</span> *sp, <span class="keyword">int</span> n)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_deinit</span><span class="params">(<span class="keyword">sbuf_t</span> *sp)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_insert</span><span class="params">(<span class="keyword">sbuf_t</span> *sp, <span class="keyword">int</span> item)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sbuf_remove</span><span class="params">(<span class="keyword">sbuf_t</span> *sp)</span></span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* __SBUF_H__ */</span></span></div></pre></td></tr></table></figure>
-<p>项目存放在一个动态分配的n项整数数组中，front和rear索引值记录该数组中的第一项和最后一项。三个信号量同步对缓冲区的访问，mutex信号量提供互斥的缓冲区访问，slots和items信号量分别记录空槽位和可用项目的数量。</p>
-<p>demo的全部代码在<a href="http://csapp.cs.cmu.edu/2e/ics2/code/conc/echoservert_pre.c" target="_blank" rel="external">这里</a>。</p>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>虽说这个demo与之前三种方案相比较已经有了很大的提升，但是在工业中依旧不可使用，因为一个完整的服务器所需要考虑的内容远远不止这些，有兴趣的可以去读读Nginx的代码。其实编写事件驱动程序并不只有I/O多路复用这一种方法，上面这个小demo实际上也是一个事件驱动服务器，带有主线程和工作者线程的简单状态机。</p>
-<ul>
-<li>主线程有两种状态（“等待连接请求”和“等待可用的缓冲区槽位”）</li>
-<li>两个I/O事件（“连接请求到达”和“缓冲区槽位变为可用”）</li>
-<li>两个转换（“接受连接请求”和“插入缓冲区项目”）</li>
-<li>每个工作者线程有一个状态（“等待可用的缓冲项目”），一个I/O事件（“缓冲区项目可用”）和一个转换（“取出缓冲区项目”）</li>
-</ul>
-<h2 id="Future"><a href="#Future" class="headerlink" title="Future"></a>Future</h2><p>关于CS专业，看完书如果不动手其实很难真正理解或者容易遗忘，所以我打算在后续阶段开发一个toyd（玩具式服务器），相对比较完整，支持静态/动态内容，服务器架构采用线程池以及事件驱动和非阻塞I/O。以此来学以致用~</p>
+          Background今年暑假读CSAPP第12章并发编程时看到的一个demo
+这个demo不但涉及到了服务器的开发，也包括了并发编程和网络编程相关知识
+Preface一个服务器必须能够同时服务两个或两个以上的客户端，为了满足这一要求，有以下几种方案
 
-          
+父进程接受监听描述符，子进程处理连接描述符
+父进
+          ...
+
+          <div class="post-more-link text-center">
+            <a class="btn" href="/blog/2016/09/27/prethreaded-server/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -414,6 +401,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/blog/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -438,56 +444,16 @@
       
         
           
-            <p><strong>网络爬虫（Web Crawler）</strong>也叫网络蜘蛛（Web Spider），蚂蚁，自动检索工具，是一种自动浏览网络的程序，也可称为网络机器人。爬虫主要分为两大类：</p>
-<ul>
-<li><p><strong>广度搜索</strong> ：例如一些著名搜索引擎Google、百度、必应、雅虎等，它们都属于广度搜索爬虫，原理就是每将一个页面所有的链接拿下来后，去遍历所有的链接，再按照上述步骤不断抓取页面直到找到相关的关键词，并按相关度对页面进行排序</p>
-</li>
-<li><p><strong>垂直搜索</strong> ：简单来说就是抓取特定的数据，如京东上面的所有书籍信息（包括书名、作者、出版社、语种、价格、链接等等），将这些特定数据（也称之为结构化数据）序列化（JSON或XML）之后存储到数据库或者文件里</p>
-<pre><code>因为实习期间主要工作就是垂直搜索这块儿，所以在接下来的爬虫系列里，我就垂直搜索爬虫方面的一些难点和新手经常会踩的几个坑做一个简要的总结，既是对自己实习经历的一个回顾加深，也是希望能够帮到即将或者正在踩坑的那些童鞋。
-</code></pre></li>
-</ul>
-<hr>
-<h2 id="Ajax-Javascript生成动态信息"><a href="#Ajax-Javascript生成动态信息" class="headerlink" title="Ajax+Javascript生成动态信息"></a>Ajax+Javascript生成动态信息</h2><blockquote>
-<p>目前Web前端技术越来越成熟，许多网页不再是简单的静态网页，而是动态网页，这些动态网页中许多信息都是通过Ajax请求从服务端动态获取的，因此要想抓取那些源代码中不包含的信息，就必须通过一些技术手段来得到它们。</p>
-</blockquote>
-<p>我在分析页面时主要使用Chrome浏览器的F12（开发者工具），很强大，当然也可以使用FireFox浏览器的插件Firebug来分析一个较为复杂的网站或者使用抓包软件如<a href="http://www.telerik.com/fiddler" target="_blank" rel="external">Fiddler</a>。这些工具的使用方法和一些技巧可以自行Google，百度。</p>
-<h3 id="方法1：手动解析JS"><a href="#方法1：手动解析JS" class="headerlink" title="方法1：手动解析JS"></a>方法1：手动解析JS</h3><p>这种方法比较耗时同时难度最大，但是一旦分析成功，抓取速度会远远快于方法2，具体原因我会在方法2中说明。下面我会演示一个例子如何去解析动态信息。</p>
-<p>拿抓取<a href="http://slide.ent.sina.com.cn/star/w/slide_4_704_137965.html#p=1" target="_blank" rel="external">高圆圆怀抱干女儿</a>这条新浪新闻举个栗子，这条新闻的评论在源代码中是直接拿不到的，其实新浪所有新闻网页都是不能通过网页源码拿到评论内容的，此时就需要我们去分析网络请求并找出评论的来源。</p>
-<ol>
-<li>得到评论链接<br><img src="spider-js/review.jpg" alt="comments_url"><br>打开F12功能后，点击图中数字1 处的“Network”，查看所有请求信息，这其中包括图片和css文件、Img、JS、以及Doc等所有请求的url，通过图中数字2 处的过滤功能，在数字3 处输入”comment”信息，因为要抓取的是评论内容，所以输入的是comment（仅仅是一种基于经验的猜测），当然也可以下拉评论内容，最后在network中发现评论的来源。回车后发现只剩下了3条Type类型均为script的url，每条都试过之后，发现第二条的url可以打开而且页面内容确实是评论信息。</li>
-<li><p>分析评论链接<br>根据步骤1，我们得到了评论的链接：<br><a href="http://comment5.news.sina.com.cn/page/info?version=1&amp;format=js&amp;channel=yl&amp;newsid=slidenews-album-704-137965&amp;group=1&amp;compress=1&amp;ie=gbk&amp;oe=gbk&amp;page=1&amp;page_size=100&amp;jsvar=requestId_6363077" target="_blank" rel="external">http://comment5.news.sina.com.cn/page/info?version=1&amp;format=js&amp;channel=yl&amp;newsid=slidenews-album-704-137965&amp;group=1&amp;compress=1&amp;ie=gbk&amp;oe=gbk&amp;page=1&amp;page_size=100&amp;jsvar=requestId_6363077</a><br>可以看到url后面有许多参数，其中比较重要的有:<br><strong>format</strong>: js [也可以写成json，即返回的数据格式]<br><strong>newsid</strong>: slidenews-ablum-704-137965 [新闻id，每条新闻的唯一标识]<br><strong>page</strong>: 1 [评论内容的页码，2，3，4…]<br>即我们只要知道每条新闻的id，就可以通过上面这条url得到每条新闻的所有评论内容，在我将format赋值为json后，得到的评论内容如下：<br><img src="spider-js/comments.jpg" alt="comments_content"><br>可以通过上图发现，评论在cmntlist这个列表里，每一条评论的详情又是一个字典，在字典中key为content，对应的value则是评论内容。上图中的json内容之所以能够在浏览器中结构化显示，是因为我使用了一个chrome插件：JSONView。谁用谁知道…</p>
-</li>
-<li><p>小结<br>其实对于有些安全性较高的网站的请求分析起来还是相当复杂和麻烦的，这里的例子比较简单，我也简略了许多内容，所以对于刚刚入手爬虫的同学来说可能还是有点费解的。这些技巧有时候靠直觉和经验，所以只有多多尝试才能掌握这些技能。</p>
-</li>
-</ol>
-<h3 id="方法2：用mini浏览器解析JS"><a href="#方法2：用mini浏览器解析JS" class="headerlink" title="方法2：用mini浏览器解析JS"></a>方法2：用mini浏览器解析JS</h3><blockquote>
-<p>其实只要技巧熟练，所有关于ajax生成的动态内容都是可以通过方法1获取到的。但是对于刚开始的爬虫新手来说，方法1有一定的门槛，这时就可以通过方法2来操作。目前有很多这样的浏览器引擎，如主要用于自动化测试的<a href="http://www.seleniumhq.org/" target="_blank" rel="external">Selenuim</a>、没有浏览器界面的<a href="http://phantomjs.org/" target="_blank" rel="external">PhantomJS</a>、<a href="http://htmlunit.sourceforge.net/" target="_blank" rel="external">HtmlUnit</a> 以及<a href="http://casperjs.org/" target="_blank" rel="external">CasperJS</a>，也有很多基于webkit的其他浏览器引擎，也就是说我们可以用这些引擎来渲染js，最后生成DOM树对元素进行操控，但是模拟浏览器环境内存和CPU消耗都非常严重，因此抓取效率将大打折扣。</p>
-</blockquote>
-<p>下面的一段python代码则是用方法2的应用(基于PhantomJS)：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</div><div class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</div><div class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> WebDriverWait</div><div class="line"><span class="keyword">from</span> selenium.webdriver.support <span class="keyword">import</span> expected_conditions <span class="keyword">as</span> EC</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">getjsContent</span><span class="params">(url, xpath_exp)</span>:</span></div><div class="line">	service_args = [</div><div class="line">		<span class="string">'--load-images=false'</span>,</div><div class="line">		<span class="string">'--disk-cache=true'</span>,</div><div class="line">	]</div><div class="line">	url = <span class="string">"http://disqus.com/embed/comments/?base=default&amp;\</span></div><div class="line">		version=208e70781fad1709ad376036d91294bc&amp;\</div><div class="line">		f=fattoquotidiano&amp;t_i=2592376"</div><div class="line">	dr  = webdriver.PhantomJS(<span class="string">'/usr/bin/phantomjs'</span>,service_args=service_args)</div><div class="line">	dr.get(url)</div><div class="line">	dr.execute_script(<span class="string">"window.scrollTo(0, document.body.scrollHeight);"</span>)</div><div class="line">	<span class="keyword">try</span>:</div><div class="line">		<span class="comment"># print dr.page_source</span></div><div class="line">		element = WebDriverWait(dr, <span class="number">2</span>).until(</div><div class="line">			EC.presence_of_element_located((By.XPATH, xpath_exp))</div><div class="line">		<span class="keyword">print</span> element.text</div><div class="line">	<span class="keyword">finally</span>:</div><div class="line">		dr.quit()</div></pre></td></tr></table></figure></p>
-<p>上述代码中用到了<em>xpath</em>，后续章节会讲到。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">method</th>
-<th style="text-align:center">strength</th>
-<th style="text-align:center">weakness</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">方法1</td>
-<td style="text-align:center">无需render、高效、抓取速度快</td>
-<td style="text-align:center">较为复杂、需要仔细分析页面</td>
-</tr>
-<tr>
-<td style="text-align:center">方法2</td>
-<td style="text-align:center">傻瓜式解决、无需分析请求</td>
-<td style="text-align:center">消耗cpu和内存、渲染js,css、速度慢</td>
-</tr>
-</tbody>
-</table>
+          网络爬虫（Web Crawler）也叫网络蜘蛛（Web Spider），蚂蚁，自动检索工具，是一种自动浏览网络的程序，也可称为网络机器人。爬虫主要分为两大类：
 
-          
+广度搜索 ：例如一些著名搜索引擎Google、百度、必应、雅虎等，它们都属于广度搜索爬虫，原理就是每将一个页面所有的链接拿下来后，去遍历所
+          ...
+
+          <div class="post-more-link text-center">
+            <a class="btn" href="/blog/2016/04/21/spider-js/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -555,6 +521,25 @@
           </span>
 
           
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/blog/categories/其他/" itemprop="url" rel="index">
+                    <span itemprop="name">其他</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
 
           
             
@@ -579,20 +564,18 @@
       
         
           
-            <h2 id="产生背景"><a href="#产生背景" class="headerlink" title="产生背景"></a>产生背景</h2><blockquote>
-<p>今天在用excel打开一个脚本生成的csv文件（存储编码格式为utf-8）时出现了乱码情况，但是用WPS直接打开却正常显示。因为文件是要交给客户的，office又是普遍使用的一枚办公软件，总不能让客户去安装一个WPS吧。网上一番查阅后，众说纷纭，因此特此记录下自己所踩过的坑：</p>
-</blockquote>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><ul>
-<li>用记事本打开csv文件，另存为Unicode格式</li>
-<li>之后用excel打开CSV文件，注意此时该文件的编码已是Unicode</li>
-<li>若出现每一行所有字段在一个单元格的情况，解决步骤接着看下面</li>
-<li>重新打开excel，执行”数据”-&gt;”自文本”-&gt;选择csv文件-&gt;”导入”-&gt;出现文本导入导向对话框-&gt;”下一步”-&gt;取消Tab键，选中逗号作为分隔符号-&gt;”确定”</li>
-<li>待转换成功，则会在excel中正常显示</li>
-</ul>
-<hr>
-<h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><pre><code>Excel默认打开文件的编码格式是Unicode，所以当文件里面同时含有中文、韩文、西欧字符等等的时候，此时若文件为非Unicode格式，由于编码格式不一致，将会出现乱码问题。
-</code></pre>
-          
+          产生背景
+今天在用excel打开一个脚本生成的csv文件（存储编码格式为utf-8）时出现了乱码情况，但是用WPS直接打开却正常显示。因为文件是要交给客户的，office又是普遍使用的一枚办公软件，总不能让客户去安装一个WPS吧。网上一番查阅后，众说纷纭，因此特此记录下自己所踩过的坑：
+
+解决方案
+
+          ...
+
+          <div class="post-more-link text-center">
+            <a class="btn" href="/blog/2016/04/21/excel_csv/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -652,7 +635,7 @@
       <section class="site-overview sidebar-panel  sidebar-panel-active ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/blog/images/avatar.gif"
+               src="/blog/images/yjp.jpg"
                alt="cloudyang" />
           <p class="site-author-name" itemprop="name">cloudyang</p>
           <p class="site-description motion-element" itemprop="description">记录我的点滴，包括但不限于编程，电影，生活。</p>
@@ -665,6 +648,13 @@
             </a>
           </div>
 
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/blog/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
           
 
           
@@ -692,6 +682,15 @@
                 </a>
               </span>
             
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/yjp999_cloudyang" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
           
         </div>
 
@@ -699,6 +698,24 @@
         
 
         
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangze01.gitHub.io" title="yangze01" target="_blank">yangze01</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wgqtmac.gitHub.io" title="wgqtmac" target="_blank">wgqtmac</a>
+                </li>
+              
+            </ul>
+          </div>
         
 
       </section>

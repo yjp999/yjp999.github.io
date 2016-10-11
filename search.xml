@@ -4,6 +4,141 @@
   
     
     <entry>
+      <title><![CDATA[AES算法详解]]></title>
+      <url>http://yoursite.com/2016/10/11/aes/</url>
+      <content type="html"><![CDATA[<h2 id="AES背景简介"><a href="#AES背景简介" class="headerlink" title="AES背景简介"></a>AES背景简介</h2><blockquote>
+<p>高级加密标准，在密码学中又称Rijndael加密法，是美国联邦政府采用的一种区块加密标准。              —— <a href="https://zh.wikipedia.org/wiki/高级加密标准" target="_blank" rel="external">维基百科</a></p>
+</blockquote>
+<p>曾经广泛使用的DES久负盛名，因为它的56位密钥过短（再加上8位校验码，也称为64位密钥），已被AES逐渐取代。在计算机的升级换代后，其运算速度大幅度提高， 破解DES密钥所需时间也将越来越短，于是在2000年10月，NIST（National Institute of Standords and Technology）选择了新的密码——高级加密标准AES，用于替代DES。</p>
+<p>无论是之前的DES还是现在广泛使用的AES，都属于对称密码技术。对称密码技术和公开密钥密码技术（如著名的RSA）相比，加密密钥和解密密钥是相同的，其最大的优势就是速度快，一般用于<strong>大量数据</strong>的加密和解密。</p>
+<h2 id="AES算法描述"><a href="#AES算法描述" class="headerlink" title="AES算法描述"></a>AES算法描述</h2><h3 id="原理详述"><a href="#原理详述" class="headerlink" title="原理详述"></a>原理详述</h3><p>AES算法是基于置换和代替的，置换是数据的重新排列，而代替是用一个单元数据替换另一个。AES使用了几种不同的技术来实现置换和替换，包括：</p>
+<ul>
+<li><strong>SubBytes</strong> ：字节代换，属于非线性变换，独立地将状态的每个字节进行。代换表（S-盒）是可逆的。状态矩阵按照下面的方式被映射成为一个新的字节：<blockquote>
+<p>将该字节的高4位作为行值，低4位作为列值，得到S盒或逆S盒的对应元素作为输出。</p>
+</blockquote>
+</li>
+</ul>
+<p>例如输入字节0x12，取S盒的第0x01行第0x02列，得到0xC9。<br><img src="/2016/10/11/aes/aes_ByteSub.png" alt="ByteSub" title="ByteSub"></p>
+<hr>
+<ul>
+<li><strong>ShiftRows</strong> ：行循环移位，在行循环移位变换中，状态阵列的后三行循环移位不同的偏移量。第0行不移动，第1行循环移位C1字节，第2行循环移位C2字节，第3行循环移位C3字节。偏移量C1、C2、C3与分组长度 $N_{b}$ 有关。如下表所示.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$N_b$</th>
+<th style="text-align:center">C1</th>
+<th style="text-align:center">C2</th>
+<th style="text-align:center">C3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+</tr>
+</tbody>
+</table>
+<p>行移位示意图：<br><img src="/2016/10/11/aes/aes_ShiftRows.png" alt="ShiftRows" title="ShiftRows"></p>
+<hr>
+<ul>
+<li><strong>MixColumn</strong> ：列混合运算，该运算将状态(State)的列看作是有限域$GF(2^8)$上的多项式$a(x)$，与多项式$c(x)$相乘（在模（$x^4+1$）下）。运算公式如下：</li>
+</ul>
+<p>\begin{equation}<br>    b(x)=c(x)*a(x)  \mod (x^4+1)<br>\end{equation}</p>
+<p>$$ \begin{bmatrix}<br>b_0 \\<br>b_1 \\<br>b_2 \\<br>b_3<br>\end{bmatrix} = \begin{bmatrix}<br>02&amp;03&amp;01&amp;01 \\<br>01&amp;02&amp;03&amp;01 \\<br>01&amp;01&amp;02&amp;03 \\<br>03&amp;01&amp;01&amp;02<br>\end{bmatrix} * \begin{bmatrix}<br>a_0\\<br>a_1\\<br>a_2\\<br>a_3<br>\end{bmatrix} $$</p>
+<p>列混合运算示意图<br><img src="/2016/10/11/aes/aes_MixColumn.png" alt="MixColumn" title="MixColumn"></p>
+<hr>
+<ul>
+<li><strong>AddRoundKey</strong> ：密钥加，它是将轮密钥简单地与状态进行逐比特异或。轮密钥由种子密钥通过密钥编排算法得到，轮密钥长度等于分组长度$N_b$。<br>密钥加运算示意图：<img src="/2016/10/11/aes/aes_AddRoundKey.png" alt="AddRoundKey" title="AddRoundKey">
+</li>
+</ul>
+<h3 id="AES的密钥调度"><a href="#AES的密钥调度" class="headerlink" title="AES的密钥调度"></a>AES的密钥调度</h3><ul>
+<li>密钥bit的总数 = 分组长度 x （轮数Round + 1）</li>
+<li>当分组长度是128bit且轮数为10时，轮密钥长度为$128 * (10+1) = 1408 bit$</li>
+<li>将初始密钥扩展成扩展密钥</li>
+<li>轮密钥从扩展密钥中取，第1轮轮密钥取扩展密钥的前$N_b$个字，第2轮轮密钥取接下来的$N_b$个字，以此类推。<h3 id="密钥扩展"><a href="#密钥扩展" class="headerlink" title="密钥扩展"></a>密钥扩展</h3>AES密钥扩展图如下：<img src="/2016/10/11/aes/aes_KeyExtent.png" alt="KeyExtent" title="KeyExtent"></li>
+<li>函数$T$由三部分组成：字循环移位、字节代换和轮常量异或。<ul>
+<li>字循环移位：将1个字中的4个字节循环左移1个字节，即将输入字$[b_0, b_1 , b_2 , b_3]$变换为$[b_1, b_2 , b_3 , b_0]$。</li>
+<li>字节代换：对字循环的结果使用S盒进行字节代换。</li>
+<li>轮常量异或： 将前两步的结果同轮常量$Rcon[j]$进行异或，其中$j$表示轮数。</li>
+</ul>
+</li>
+<li>轮常量是一个字，使用轮常量是为了防止不同轮中产生的轮密钥的对称性或相似性。</li>
+</ul>
+<h3 id="AES小结"><a href="#AES小结" class="headerlink" title="AES小结"></a>AES小结</h3><ul>
+<li>AES的密钥长度和加密轮数列表如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">name</th>
+<th style="text-align:center">密钥长度(32bit)$(N_k)$</th>
+<th style="text-align:center">分组长度$N_b$</th>
+<th style="text-align:center">加密轮数$(N_r)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">AES-128</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">10</td>
+</tr>
+<tr>
+<td style="text-align:center">AES-192</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">12</td>
+</tr>
+<tr>
+<td style="text-align:center">AES-256</td>
+<td style="text-align:center">8</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">14</td>
+</tr>
+</tbody>
+</table>
+<p>显然，AES是一个迭代的对称密钥分组的密码，它可以使用128,192和256位密钥，并且用128位（16字节）分组加密和解密数据。</p>
+<ul>
+<li>AES的加密/解密流程图<img src="/2016/10/11/aes/aes_flow.png" alt="The flow of encryption and decryption in AES" title="The flow of encryption and decryption in AES">
+</li>
+</ul>
+<h2 id="AES的应用"><a href="#AES的应用" class="headerlink" title="AES的应用"></a>AES的应用</h2><p>研一第一学期我们院系除了别的课程，还开了两门课，现代密码学和网络信息安全，这两门课程我也都选择了，因为均有涉及到密码基础学，并且网络信息安全这门课的老师在上周留了一个project，写一个程序要求利用AES算法实现对文本文件的内容加解密，具体要求如下：</p>
+<ul>
+<li>从命令行接收3个参数</li>
+<li>参数1=enc表示加密，参数1=dec表示解密</li>
+<li>参数2为待加密、解密的文件名</li>
+<li>参数3为密码</li>
+</ul>
+<p>为了快速实现这一功能，我直接调用了openssl库里的现有AES算法，整个程序的代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Linux: gcc -o encfile encfile.cpp -lcrypto</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> N 4096</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"openssl/aes.h"</span></span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">pragma</span> comment(lib,<span class="meta-string">"libeay32.lib"</span>)</span></div><div class="line"></div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> buf[<span class="number">16</span>];</div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> buf2[<span class="number">16</span>];</div><div class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> aes_keybuf[<span class="number">32</span>];</div><div class="line">AES_KEY aeskey;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">encode</span><span class="params">(<span class="keyword">char</span> inString[], <span class="keyword">int</span> inLen, <span class="keyword">char</span> passwd[], <span class="keyword">int</span> pwdLen)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i,j, len, nLoop, nRes;</div><div class="line">	<span class="keyword">char</span> enString[N];</div><div class="line"></div><div class="line">	<span class="comment">// 准备32字节(256位)的AES密码字节</span></div><div class="line">	<span class="built_in">memset</span>(aes_keybuf,<span class="number">0x90</span>,<span class="number">32</span>);</div><div class="line">	<span class="keyword">if</span>(pwdLen&lt;<span class="number">32</span>)&#123; len=pwdLen; &#125; <span class="keyword">else</span> &#123; len=<span class="number">32</span>;&#125;</div><div class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;len;i++) aes_keybuf[i]=passwd[i];</div><div class="line">	<span class="comment">// 输入字节串分组成16字节的块	</span></div><div class="line">	nLoop=inLen/<span class="number">16</span>; nRes = inLen%<span class="number">16</span>;</div><div class="line">	<span class="comment">// 加密输入的字节串</span></div><div class="line">	AES_set_encrypt_key(aes_keybuf,<span class="number">256</span>,&amp;aeskey);</div><div class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;nLoop;i++)&#123;</div><div class="line">		<span class="built_in">memset</span>(buf,<span class="number">0</span>,<span class="number">16</span>);</div><div class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;<span class="number">16</span>;j++) buf[j]=inString[i*<span class="number">16</span>+j];</div><div class="line">		AES_encrypt(buf,buf2,&amp;aeskey);</div><div class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;<span class="number">16</span>;j++) enString[i*<span class="number">16</span>+j]=buf2[j];</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">if</span>(nRes&gt;<span class="number">0</span>)&#123;</div><div class="line">		<span class="built_in">memset</span>(buf,<span class="number">0</span>,<span class="number">16</span>);</div><div class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;nRes;j++) buf[j]=inString[i*<span class="number">16</span>+j];</div><div class="line">		AES_encrypt(buf,buf2,&amp;aeskey);</div><div class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;<span class="number">16</span>;j++) enString[i*<span class="number">16</span>+j]=buf2[j];</div><div class="line">		<span class="comment">//puts("encrypt");</span></div><div class="line">	&#125;</div><div class="line">	enString[i*<span class="number">16</span>+j]=<span class="number">0</span>;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"The encrypted string is:\n  %s "</span>, enString);</div><div class="line"></div><div class="line">	FILE *fp;</div><div class="line">	fp = fopen(<span class="string">"enc_string.txt"</span>,<span class="string">"w"</span>);</div><div class="line">	<span class="keyword">if</span>(fp==<span class="literal">NULL</span>)&#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"Failure to open the file.\n"</span>);</div><div class="line">	&#125;<span class="keyword">else</span>&#123;</div><div class="line">		fwrite(enString, <span class="number">1</span>, <span class="keyword">sizeof</span>(enString), fp);</div><div class="line">	&#125;</div><div class="line">	fclose(fp);</div><div class="line">	<span class="comment">// return enString;</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">decode</span><span class="params">(<span class="keyword">char</span> *enStr, <span class="keyword">int</span> inLen, <span class="keyword">char</span> passwd[], <span class="keyword">int</span> pwdLen)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i,j, len, nLoop, nRes;</div><div class="line">	<span class="keyword">char</span> deString[N];</div><div class="line"></div><div class="line">	<span class="comment">// 准备32字节(256位)的AES密码字节</span></div><div class="line">	<span class="built_in">memset</span>(aes_keybuf,<span class="number">0x90</span>,<span class="number">32</span>);</div><div class="line">	<span class="keyword">if</span>(pwdLen&lt;<span class="number">32</span>)&#123; len=pwdLen; &#125; <span class="keyword">else</span> &#123; len=<span class="number">32</span>;&#125;</div><div class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;len;i++) aes_keybuf[i]=passwd[i];</div><div class="line">	<span class="comment">// 输入字节串分组成16字节的块	</span></div><div class="line">	nLoop=inLen/<span class="number">16</span>; nRes = inLen%<span class="number">16</span>;</div><div class="line"></div><div class="line">	<span class="comment">// 密文串的解密	</span></div><div class="line">	AES_set_decrypt_key(aes_keybuf,<span class="number">256</span>,&amp;aeskey);</div><div class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;nLoop;i++)&#123;</div><div class="line">		<span class="built_in">memset</span>(buf,<span class="number">0</span>,<span class="number">16</span>);</div><div class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;<span class="number">16</span>;j++) buf[j]=enStr[i*<span class="number">16</span>+j];</div><div class="line">		AES_decrypt(buf,buf2,&amp;aeskey);</div><div class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;<span class="number">16</span>;j++) deString[i*<span class="number">16</span>+j]=buf2[j];</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">if</span>(nRes&gt;<span class="number">0</span>)&#123;</div><div class="line">		<span class="built_in">memset</span>(buf,<span class="number">0</span>,<span class="number">16</span>);</div><div class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;<span class="number">16</span>;j++) buf[j]=enStr[i*<span class="number">16</span>+j];</div><div class="line">		AES_decrypt(buf,buf2,&amp;aeskey);</div><div class="line">		<span class="keyword">for</span>(j=<span class="number">0</span>;j&lt;<span class="number">16</span>;j++) deString[i*<span class="number">16</span>+j]=buf2[j];</div><div class="line">		<span class="comment">//puts("decrypt");</span></div><div class="line">	&#125;</div><div class="line">	deString[i*<span class="number">16</span>+nRes]=<span class="number">0</span>;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"The decrypted string is:\n  %s "</span>, deString);</div><div class="line">	</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span></span></div><div class="line">&#123;</div><div class="line"></div><div class="line">	<span class="keyword">char</span> *inString;</div><div class="line">	<span class="keyword">if</span>(argc != <span class="number">4</span>)&#123;</div><div class="line">		<span class="built_in">printf</span>(<span class="string">"usage: %s &lt;purpose&gt; &lt;filename&gt; &lt;password&gt;\n"</span>, argv[<span class="number">0</span>]);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">char</span> *purpose = argv[<span class="number">1</span>];</div><div class="line">	<span class="keyword">char</span> *filename = argv[<span class="number">2</span>];</div><div class="line">	<span class="keyword">char</span> *passwd = argv[<span class="number">3</span>];</div><div class="line"></div><div class="line">	<span class="keyword">struct</span> stat sb;</div><div class="line">	<span class="keyword">int</span> fd;</div><div class="line">	fd = open(filename, O_RDONLY);</div><div class="line">	fstat(fd, &amp;sb);</div><div class="line"></div><div class="line">	inString = (<span class="keyword">char</span> *)mmap(<span class="literal">NULL</span>, sb.st_size, PROT_READ, MAP_PRIVATE, fd, <span class="number">0</span>);</div><div class="line">	close(fd);</div><div class="line"></div><div class="line">	<span class="keyword">if</span>(<span class="built_in">strcmp</span>(purpose, <span class="string">"enc"</span>) == <span class="number">0</span>)&#123;</div><div class="line">		encode(inString, <span class="built_in">strlen</span>(inString), passwd, <span class="built_in">strlen</span>(passwd));	</div><div class="line">	&#125;<span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">strcmp</span>(purpose, <span class="string">"dec"</span>) == <span class="number">0</span>)&#123;</div><div class="line">		decode(inString, <span class="built_in">strlen</span>(inString), passwd, <span class="built_in">strlen</span>(passwd));</div><div class="line">	&#125;<span class="keyword">else</span>&#123;</div><div class="line">		<span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"the first argument must be 'enc' or 'dec' %s\n"</span>, argv[<span class="number">0</span>]);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>代码的组织逻辑非常简单:</p>
+<ul>
+<li><strong>main</strong> 函数：接收命令行参数，并读取指定的文件内容。</li>
+<li><strong>encode </strong>函数：对字符串利用openssl库里的aes算法加密（使用命令行参数3提供的密码）。</li>
+<li><strong>decode</strong> 函数：对文本文件里的加密串进行解密，由密文转换成明文。</li>
+</ul>
+<p>需要注意的是，在Linux下面利用openssl库进行开发之前，必须保证已安装openssl，否则编译报错。<br>安装openssl的命令是：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get install openssl</div><div class="line">sudo apt-get install libssl-dev</div></pre></td></tr></table></figure></p>
+<p>编译源码时，需要在后面添加<strong>-lcrypto</strong>，因为在链接时需要用到linux下的加密库。假设源代码文件名为encfile.cpp，编译命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">gcc -o encfile encfile.cpp -lcrypto</div></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在写这篇博客的过程中，花费了我很多精力和时间。其实在大三下阶段我就上过关于密码学的课程，但是由于当时逃课成瘾，课上几乎没怎么听，只是简单地应付了一下考试，所以关于密码学的相关知识基础非常薄弱，于是趁着现在事情不算多，又在现阶段重新选了密码学的课程，就把最近在密码学里面刚学到的的AES算法进行一个总结并实践之。</p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[日常随感之学习思路]]></title>
       <url>http://yoursite.com/2016/09/29/blog-thinking/</url>
       <content type="html"><![CDATA[<h2 id="懵"><a href="#懵" class="headerlink" title="懵"></a>懵</h2><p>今年的4月中旬，我在个人PC上面搭建好了Github Pages博客环境，大家也可以看到我的第一篇博客发表时间是在2016年4月21日，但是因为在6月份重新装了系统，之前的博客环境也就一直没有重新搭建，到了这几天，来到科大读研究生，突然意识到以后还是需要把许多idea以及读书笔记以博客的形式记录下来，这样可以加深理解，也是对知识的再回顾。</p>

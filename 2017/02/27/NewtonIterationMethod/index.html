@@ -98,7 +98,7 @@
 牛顿迭代法多数方程不存在求根公式，因此求精确根非">
 <meta property="og:image" content="http://yoursite.com/2017/02/27/NewtonIterationMethod/NewtonIteration.png">
 <meta property="og:image" content="http://yoursite.com/2017/02/27/NewtonIterationMethod/runtime.png">
-<meta property="og:updated_time" content="2017-02-27T05:11:36.000Z">
+<meta property="og:updated_time" content="2017-02-27T05:26:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用牛顿迭代法求平方根">
 <meta name="twitter:description" content="在LeetCode上面有一道Easy题，是sqrt(int x)，即求整数x的平方根。目前比较通用的一个方法就是采用牛顿迭代法来求平方根，它又被称为牛顿- 拉弗森方法，该方法主要思想就是 切线是曲线的线性逼近  。本文大致结构分为两部分，第一部分阐述牛顿迭代法的数学原理，第二部分简单说明如何在求平方根这一问题上应用牛顿迭代法，最后是一个简单总结。
@@ -327,19 +327,7 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数学/" itemprop="url" rel="index">
-                    <span itemprop="name">数学</span>
-                  </a>
-                </span>
-
-                
-                
-                  ， 
-                
-
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/数学/编程/" itemprop="url" rel="index">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
                     <span itemprop="name">编程</span>
                   </a>
                 </span>
@@ -393,7 +381,7 @@
 <h2 id="牛顿迭代法"><a href="#牛顿迭代法" class="headerlink" title="牛顿迭代法"></a>牛顿迭代法</h2><p>多数方程不存在求根公式，因此求精确根非常困难，甚至不可能，从而寻找方程的近似根就显得特别重要。</p>
 <h3 id="几何-代数推导"><a href="#几何-代数推导" class="headerlink" title="几何-代数推导"></a>几何-代数推导</h3><p>已知曲线<script type="math/tex">f(x)</script>，在<script type="math/tex">(x_n,f(x_n))</script>点作切线，交<script type="math/tex">x</script>轴于<script type="math/tex">x_{n+1}</script>点，接着在<script type="math/tex">(x_{n+1},f(x_{n+1}))</script>点作切线交<script type="math/tex">x</script>轴于<script type="math/tex">x_{n+2}</script>点，图像如下：</p>
 <img src="/2017/02/27/NewtonIterationMethod/NewtonIteration.png" alt="牛顿迭代法" title="牛顿迭代法">
-<p>显然，点<script type="math/tex">x_n</script>处的切线方程为<script type="math/tex">y=f(x_n)+f'(x_n)(x-x_n)</script>，所以容易得到: <script type="math/tex">x_{n+1}=x_{n}-\frac{f(x_n)}{f'(x_{n})}</script>，求出点<script type="math/tex">x_{n+1}</script>的值后，和上面一样的步骤，可以得到过点<script type="math/tex">(x_{n+1},f(x_{n+1}))</script>的切线方程，于是又可以<br>得到点<script type="math/tex">x_{n+2}</script>的值，这样不断迭代下去，直至无限逼近零点（即曲线<script type="math/tex">f(x)</script>与<script type="math/tex">x</script>轴的交点）。</p>
+<p>显然，点<script type="math/tex">x_n</script>处的切线方程为<script type="math/tex">y=f(x_n)+f'(x_n)(x-x_n)</script>，所以容易得到: <script type="math/tex">x_{n+1}=x_{n}-\frac{f(x_n)}{f'(x_{n})}</script>，求出点<script type="math/tex">x_{n+1}</script>的值后，和上面一样的步骤，可以得到过点<script type="math/tex">(x_{n+1},f(x_{n+1}))</script>的切线方程，于是又可以得到点<script type="math/tex">x_{n+2}</script>的值，这样不断迭代下去，直至无限逼近零点（即曲线<script type="math/tex">f(x)</script>与<script type="math/tex">x</script>轴的交点）。</p>
 <p>这种方法直觉上是对的，但是这里缺乏严格的数学证明，但这个其实已经被证明，来看看收敛的充分条件：</p>
 <blockquote>
 <p>若<script type="math/tex">f</script>二阶可导，那么在待求的零点<script type="math/tex">x</script>周围存在一个区域，只要起始点<script type="math/tex">x_0</script>位于这个邻近区间内，那么牛顿-拉弗森方法必定收敛。</p>
@@ -558,7 +546,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

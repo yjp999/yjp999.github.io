@@ -7,7 +7,7 @@
 
 <html class="theme-next pisces use-motion">
 <head>
-  <meta charset="UTF-8"/>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -135,7 +135,7 @@
   <link rel="canonical" href="http://yoursite.com/2016/10/11/aes/"/>
 
 
-  <title> AES算法详解 | yjp's tictoc </title>
+  <title> AES算法详解 | yjp's tictoc </title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -144,7 +144,7 @@
 
 
 
-  <script type="text/javascript">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><script type="text/javascript">
     var _hmt = _hmt || [];
     (function() {
       var hm = document.createElement("script");
@@ -400,6 +400,7 @@
 <ul>
 <li><strong>ShiftRows</strong> ：行循环移位，在行循环移位变换中，状态阵列的后三行循环移位不同的偏移量。第0行不移动，第1行循环移位C1字节，第2行循环移位C2字节，第3行循环移位C3字节。偏移量C1、C2、C3与分组长度 $N_{b}$ 有关。如下表所示.</li>
 </ul>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -430,14 +431,29 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>行移位示意图：<br><img src="/2016/10/11/aes/aes_ShiftRows.png" alt="ShiftRows" title="ShiftRows"></p>
 <hr>
 <ul>
 <li><strong>MixColumn</strong> ：列混合运算，该运算将状态(State)的列看作是有限域$GF(2^8)$上的多项式$a(x)$，与多项式$c(x)$相乘（在模（$x^4+1$）下）。运算公式如下：</li>
 </ul>
 <p>\begin{equation}<br>    b(x)=c(x)*a(x)  \mod (x^4+1)<br>\end{equation}</p>
-<p>$$ \begin{bmatrix}<br>b_0 \\<br>b_1 \\<br>b_2 \\<br>b_3<br>\end{bmatrix} = \begin{bmatrix}<br>02&amp;03&amp;01&amp;01 \\<br>01&amp;02&amp;03&amp;01 \\<br>01&amp;01&amp;02&amp;03 \\<br>03&amp;01&amp;01&amp;02<br>\end{bmatrix} * \begin{bmatrix}<br>a_0\\<br>a_1\\<br>a_2\\<br>a_3<br>\end{bmatrix} $$</p>
-<p>列混合运算示意图<br><img src="/2016/10/11/aes/aes_MixColumn.png" alt="MixColumn" title="MixColumn"></p>
+<script type="math/tex; mode=display">\begin{bmatrix}
+b_0 \\\\
+b_1 \\\\
+b_2 \\\\
+b_3
+\end{bmatrix} = \begin{bmatrix}
+02&03&01&01 \\\\
+01&02&03&01 \\\\
+01&01&02&03 \\\\
+03&01&01&02 
+\end{bmatrix} * \begin{bmatrix}
+a_0\\\\
+a_1\\\\
+a_2\\\\
+a_3
+\end{bmatrix}</script><p>列混合运算示意图<br><img src="/2016/10/11/aes/aes_MixColumn.png" alt="MixColumn" title="MixColumn"></p>
 <hr>
 <ul>
 <li><strong>AddRoundKey</strong> ：密钥加，它是将轮密钥简单地与状态进行逐比特异或。轮密钥由种子密钥通过密钥编排算法得到，轮密钥长度等于分组长度$N_b$。<br>密钥加运算示意图：<img src="/2016/10/11/aes/aes_AddRoundKey.png" alt="AddRoundKey" title="AddRoundKey">
@@ -459,6 +475,7 @@
 <h3 id="AES小结"><a href="#AES小结" class="headerlink" title="AES小结"></a>AES小结</h3><ul>
 <li>AES的密钥长度和加密轮数列表如下：</li>
 </ul>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -489,6 +506,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>显然，AES是一个迭代的对称密钥分组的密码，它可以使用128,192和256位密钥，并且用128位（16字节）分组加密和解密数据。</p>
 <ul>
 <li>AES的加密/解密流程图<img src="/2016/10/11/aes/aes_flow.png" alt="The flow of encryption and decryption in AES" title="The flow of encryption and decryption in AES">
@@ -1139,7 +1157,7 @@
         showTime(Counter);
       }
     });
-  </script>
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-02-27T03:04:17.000Z</updated>
+  <updated>2017-02-27T05:11:36.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,34 +20,32 @@
     <link href="http://yoursite.com/2017/02/27/NewtonIterationMethod/"/>
     <id>http://yoursite.com/2017/02/27/NewtonIterationMethod/</id>
     <published>2017-02-27T02:59:22.000Z</published>
-    <updated>2017-02-27T03:04:17.000Z</updated>
+    <updated>2017-02-27T05:11:36.000Z</updated>
     
     <content type="html"><![CDATA[<p>在LeetCode上面有一道Easy题，是sqrt(int x)，即求整数x的平方根。目前比较通用的一个方法就是采用牛顿迭代法来求平方根，它又被称为牛顿- 拉弗森方法，该方法主要思想就是 <strong>切线是曲线的线性逼近</strong>  。本文大致结构分为两部分，第一部分阐述牛顿迭代法的数学原理，第二部分简单说明如何在求平方根这一问题上应用牛顿迭代法，最后是一个简单总结。</p>
 <hr>
 <h2 id="牛顿迭代法"><a href="#牛顿迭代法" class="headerlink" title="牛顿迭代法"></a>牛顿迭代法</h2><p>多数方程不存在求根公式，因此求精确根非常困难，甚至不可能，从而寻找方程的近似根就显得特别重要。</p>
-<h3 id="几何-代数推导"><a href="#几何-代数推导" class="headerlink" title="几何-代数推导"></a>几何-代数推导</h3><p>已知曲线$f(x)$，在$(x_n,f(x<em>n))$点作切线，交$x$轴于$x</em>{n+1}$点，接着在$(x<em>{n+1},f(x</em>{n+1}))$点作切线交$x$轴于$x_{n+2}$点，图像如下：</p>
+<h3 id="几何-代数推导"><a href="#几何-代数推导" class="headerlink" title="几何-代数推导"></a>几何-代数推导</h3><p>已知曲线<script type="math/tex">f(x)</script>，在<script type="math/tex">(x_n,f(x_n))</script>点作切线，交<script type="math/tex">x</script>轴于<script type="math/tex">x_{n+1}</script>点，接着在<script type="math/tex">(x_{n+1},f(x_{n+1}))</script>点作切线交<script type="math/tex">x</script>轴于<script type="math/tex">x_{n+2}</script>点，图像如下：</p>
 <img src="/2017/02/27/NewtonIterationMethod/NewtonIteration.png" alt="牛顿迭代法" title="牛顿迭代法">
-<p>显然，点$x_n$处的切线方程为$y=f(x_n)+f’(x_n)(x-x<em>n)$，所以容易得到: $x</em>{n+1}=x_{n}-\frac{f(x<em>n)}{f’(x</em>{n})}$，求出点$x<em>{n+1}$的值后，和上面一样的步骤，可以得到过点$(x</em>{n+1},f(x<em>{n+1}))$的切线方程，于是又可以得到点$x</em>{n+2}$d的值，这样不断迭代下去，直至无限逼近零点（即曲线$f(x)$与$x$轴的交点）。</p>
+<p>显然，点<script type="math/tex">x_n</script>处的切线方程为<script type="math/tex">y=f(x_n)+f'(x_n)(x-x_n)</script>，所以容易得到: <script type="math/tex">x_{n+1}=x_{n}-\frac{f(x_n)}{f'(x_{n})}</script>，求出点<script type="math/tex">x_{n+1}</script>的值后，和上面一样的步骤，可以得到过点<script type="math/tex">(x_{n+1},f(x_{n+1}))</script>的切线方程，于是又可以<br>得到点<script type="math/tex">x_{n+2}</script>的值，这样不断迭代下去，直至无限逼近零点（即曲线<script type="math/tex">f(x)</script>与<script type="math/tex">x</script>轴的交点）。</p>
 <p>这种方法直觉上是对的，但是这里缺乏严格的数学证明，但这个其实已经被证明，来看看收敛的充分条件：</p>
 <blockquote>
-<p>若$f$二阶可导，那么在待求的零点$x$周围存在一个区域，只要起始点$x_0$位于这个邻近区间内，那么牛顿-拉弗森方法必定收敛。</p>
+<p>若<script type="math/tex">f</script>二阶可导，那么在待求的零点<script type="math/tex">x</script>周围存在一个区域，只要起始点<script type="math/tex">x_0</script>位于这个邻近区间内，那么牛顿-拉弗森方法必定收敛。</p>
 </blockquote>
-<h3 id="和泰勒级数的关系"><a href="#和泰勒级数的关系" class="headerlink" title="和泰勒级数的关系"></a>和泰勒级数的关系</h3><p>用牛顿迭代法解非线性方程，是把非线性方程$f(x)=0$线性化的一种近似方法。为什么这么说呢？这就要提起泰勒级数了(泰勒大法好啊，这辈子都会记住，毕竟在这儿栽过跟头)，我们把$f(x)$在点$x_0$的某邻域内展开成泰勒级数：</p>
-<p>$f(x)=f(x_0)+f’(x_0)(x-x_0)+\frac{f’’(x_0)(x-x_0)^2}{2!}+···+\frac{f^{(n)}(x_0)(x-x_0)^n}{n!}+R_n(x)$</p>
-<p>取其线性部分，也就是泰勒展开的前两项，并令其等于0，即$f(x_0)+f’(x_0)(x-x_0)=0$，以此作为非线性方程$f(x)=0$的近似方程，若一阶导数存在，且不为零（因为要做分母），则其解为$x_1=x_0-\frac{f(x_0)}{f’(x_0)}$，于是我们便得到了关于牛顿-拉弗森的一个迭代关系式：</p>
-<p>$x_{n+1}=x_n-\frac{f(x_n)}{f’(x_n)}$</p>
-<p>可以发现，这个迭代公式和我们之前通过几何图推导出来的完全一致，这里要注意的是最后求出的零点并不是精确值，而是一个近似解，但是我们可以无限逼近精确值，这和极限的思想一个道理。</p>
+<h3 id="和泰勒级数的关系"><a href="#和泰勒级数的关系" class="headerlink" title="和泰勒级数的关系"></a>和泰勒级数的关系</h3><p>用牛顿迭代法解非线性方程，是把非线性方程<script type="math/tex">f(x)=0</script>线性化的一种近似方法。为什么这么说呢？这就要提起泰勒级数了(泰勒大法好啊，这辈子都会记住，毕竟在这儿栽过跟头)，我们把<script type="math/tex">f(x)</script>在点<script type="math/tex">x_0</script>的某邻域内展开成泰勒级数：</p>
+<script type="math/tex; mode=display">f(x)=f(x_0)+f'(x_0)(x-x_0)+\frac{f''(x_0)(x-x_0)^2}{2!}+···+\frac{f^{(n)}(x_0)(x-x_0)^n}{n!}+R_n(x)</script><p>取其线性部分，也就是泰勒展开的前两项，并令其等于0，即<script type="math/tex">f(x_0)+f'(x_0)(x-x_0)=0</script>，以此作为非线性方程<script type="math/tex">f(x)=0</script>的近似方程，若一阶导数存在，且不为零（因为要做分母），则其解为<script type="math/tex">x_1=x_0-\frac{f(x_0)}{f'(x_0)}</script>，于是我们便得到了关于牛顿-拉弗森的一个迭代关系式：</p>
+<script type="math/tex; mode=display">x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}</script><p>可以发现，这个迭代公式和我们之前通过几何图推导出来的完全一致，这里要注意的是最后求出的零点并不是精确值，而是一个近似解，但是我们可以无限逼近精确值，这和极限的思想一个道理。</p>
 <hr>
 <h2 id="求平方根"><a href="#求平方根" class="headerlink" title="求平方根"></a>求平方根</h2><p>前面简单的讲了牛顿迭代法的数学原理，如果有兴趣，可以<a href="http://www.matongxue.com/madocs/205.html#/madoc" target="_blank" rel="external">点这里</a>去仔细阅读关于牛顿迭代法更深层的本质，这里不再赘述。</p>
-<p>有了这个利器，求平方根就非常简单了，高次方程的根其实也可以借此法求解（但是对函数特性有要求，二次函数可以收敛，这里不必担心）。假如我们要求$\sqrt{10}$，那怎么做呢？</p>
+<p>有了这个利器，求平方根就非常简单了，高次方程的根其实也可以借此法求解（但是对函数特性有要求，二次函数可以收敛，这里不必担心）。假如我们要求<script type="math/tex">\sqrt{10}</script>，那怎么做呢？</p>
 <blockquote>
 <p><strong>步骤:</strong></p>
 <ul>
-<li>令$x=\sqrt{10}$，则有方程$x^2-10=0$;</li>
-<li>令$f(x)=x^2-10$，显然我们要求的就是曲线$f(x)$与$x$轴的交点;</li>
-<li>随便给一个初值$x<em>0$，根据$x</em>{n+1}=x_n-\frac{f(x_n)}{f’(x_n)}$这一迭代公式，可以计算出$x_1$，$x_2$…，那计算到什么时候停止呢？看下面：</li>
-<li>计算$x$的增量的绝对值，即$|\Delta{x}|=|x_{n+1}-x_n|=|\frac{f(x_n)}{f’(x_n)}|$，根据题目要求的精度$p$，我们可以设定当$|\Delta{x}|&lt;p$时便停止迭代，计算中止;</li>
-<li>此时得到的$x<em>{n+1}$便为方程的根，即$x</em>{n+1}=\sqrt{10}$.</li>
+<li>令<script type="math/tex">x=\sqrt{10}</script>，则有方程<script type="math/tex">x^2-10=0</script>;</li>
+<li>令<script type="math/tex">f(x)=x^2-10</script>，显然我们要求的就是曲线<script type="math/tex">f(x)</script>与<script type="math/tex">x</script>轴的交点;</li>
+<li>随便给一个初值<script type="math/tex">x_0</script>，根据<script type="math/tex">x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}</script>这一迭代公式，可以计算出<script type="math/tex">x_1</script>，<script type="math/tex">x_2</script>…，那计算到什么时候停止呢？看下面：</li>
+<li>计算<script type="math/tex">x</script>的增量的绝对值，即<script type="math/tex">|\Delta{x}|=|x_{n+1}-x_n|=|\frac{f(x_n)}{f'(x_n)}|</script>，根据题目要求的精度<script type="math/tex">p</script>，我们可以设定当<script type="math/tex">|\Delta{x}|<p</script>时便停止迭代，计算中止;</li>
+<li>此时得到的<script type="math/tex">x_{n+1}</script>便为方程的根，即<script type="math/tex">x_{n+1}=\sqrt{10}</script>.</li>
 </ul>
 </blockquote>
 <h3 id="程序的实现"><a href="#程序的实现" class="headerlink" title="程序的实现"></a>程序的实现</h3><p>有了上述的基本分析后，就很容易写出代码了，采用c++编写如下，当然这里贴出的代码是对整数求平方根，不过对浮点数此法亦是可行的，只需更改一下精度即可。</p>
@@ -177,6 +175,7 @@
 <ul>
 <li><strong>ShiftRows</strong> ：行循环移位，在行循环移位变换中，状态阵列的后三行循环移位不同的偏移量。第0行不移动，第1行循环移位C1字节，第2行循环移位C2字节，第3行循环移位C3字节。偏移量C1、C2、C3与分组长度 $N_{b}$ 有关。如下表所示.</li>
 </ul>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -207,14 +206,29 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>行移位示意图：<br><img src="/2016/10/11/aes/aes_ShiftRows.png" alt="ShiftRows" title="ShiftRows"></p>
 <hr>
 <ul>
 <li><strong>MixColumn</strong> ：列混合运算，该运算将状态(State)的列看作是有限域$GF(2^8)$上的多项式$a(x)$，与多项式$c(x)$相乘（在模（$x^4+1$）下）。运算公式如下：</li>
 </ul>
 <p>\begin{equation}<br>    b(x)=c(x)*a(x)  \mod (x^4+1)<br>\end{equation}</p>
-<p>$$ \begin{bmatrix}<br>b_0 \\<br>b_1 \\<br>b_2 \\<br>b_3<br>\end{bmatrix} = \begin{bmatrix}<br>02&amp;03&amp;01&amp;01 \\<br>01&amp;02&amp;03&amp;01 \\<br>01&amp;01&amp;02&amp;03 \\<br>03&amp;01&amp;01&amp;02<br>\end{bmatrix} * \begin{bmatrix}<br>a_0\\<br>a_1\\<br>a_2\\<br>a_3<br>\end{bmatrix} $$</p>
-<p>列混合运算示意图<br><img src="/2016/10/11/aes/aes_MixColumn.png" alt="MixColumn" title="MixColumn"></p>
+<script type="math/tex; mode=display">\begin{bmatrix}
+b_0 \\\\
+b_1 \\\\
+b_2 \\\\
+b_3
+\end{bmatrix} = \begin{bmatrix}
+02&03&01&01 \\\\
+01&02&03&01 \\\\
+01&01&02&03 \\\\
+03&01&01&02 
+\end{bmatrix} * \begin{bmatrix}
+a_0\\\\
+a_1\\\\
+a_2\\\\
+a_3
+\end{bmatrix}</script><p>列混合运算示意图<br><img src="/2016/10/11/aes/aes_MixColumn.png" alt="MixColumn" title="MixColumn"></p>
 <hr>
 <ul>
 <li><strong>AddRoundKey</strong> ：密钥加，它是将轮密钥简单地与状态进行逐比特异或。轮密钥由种子密钥通过密钥编排算法得到，轮密钥长度等于分组长度$N_b$。<br>密钥加运算示意图：<img src="/2016/10/11/aes/aes_AddRoundKey.png" alt="AddRoundKey" title="AddRoundKey">
@@ -236,6 +250,7 @@
 <h3 id="AES小结"><a href="#AES小结" class="headerlink" title="AES小结"></a>AES小结</h3><ul>
 <li>AES的密钥长度和加密轮数列表如下：</li>
 </ul>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -266,6 +281,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>显然，AES是一个迭代的对称密钥分组的密码，它可以使用128,192和256位密钥，并且用128位（16字节）分组加密和解密数据。</p>
 <ul>
 <li>AES的加密/解密流程图<img src="/2016/10/11/aes/aes_flow.png" alt="The flow of encryption and decryption in AES" title="The flow of encryption and decryption in AES">
@@ -424,7 +440,7 @@
 <li><p><strong>广度搜索</strong> ：例如一些著名搜索引擎Google、百度、必应、雅虎等，它们都属于广度搜索爬虫，原理就是每将一个页面所有的链接拿下来后，去遍历所有的链接，再按照上述步骤不断抓取页面直到找到相关的关键词，并按相关度对页面进行排序</p>
 </li>
 <li><p><strong>垂直搜索</strong> ：简单来说就是抓取特定的数据，如京东上面的所有书籍信息（包括书名、作者、出版社、语种、价格、链接等等），将这些特定数据（也称之为结构化数据）序列化（JSON或XML）之后存储到数据库或者文件里</p>
-<pre><code>因为实习期间主要工作就是垂直搜索这块儿，所以在接下来的爬虫系列里，我就垂直搜索爬虫方面的一些难点和新手经常会踩的几个坑做一个简要的总结，既是对自己实习经历的一个回顾加深，也是希望能够帮到即将或者正在踩坑的那些童鞋。
+<pre><code>  因为实习期间主要工作就是垂直搜索这块儿，所以在接下来的爬虫系列里，我就垂直搜索爬虫方面的一些难点和新手经常会踩的几个坑做一个简要的总结，既是对自己实习经历的一个回顾加深，也是希望能够帮到即将或者正在踩坑的那些童鞋。
 </code></pre></li>
 </ul>
 <hr>
@@ -452,7 +468,8 @@
 </blockquote>
 <p>下面的一段python代码则是用方法2的应用(基于PhantomJS)：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</div><div class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</div><div class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> WebDriverWait</div><div class="line"><span class="keyword">from</span> selenium.webdriver.support <span class="keyword">import</span> expected_conditions <span class="keyword">as</span> EC</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">getjsContent</span><span class="params">(url, xpath_exp)</span>:</span></div><div class="line">	service_args = [</div><div class="line">		<span class="string">'--load-images=false'</span>,</div><div class="line">		<span class="string">'--disk-cache=true'</span>,</div><div class="line">	]</div><div class="line">	url = <span class="string">"http://disqus.com/embed/comments/?base=default&amp;\</span></div><div class="line">		version=208e70781fad1709ad376036d91294bc&amp;\</div><div class="line">		f=fattoquotidiano&amp;t_i=2592376"</div><div class="line">	dr  = webdriver.PhantomJS(<span class="string">'/usr/bin/phantomjs'</span>,service_args=service_args)</div><div class="line">	dr.get(url)</div><div class="line">	dr.execute_script(<span class="string">"window.scrollTo(0, document.body.scrollHeight);"</span>)</div><div class="line">	<span class="keyword">try</span>:</div><div class="line">		<span class="comment"># print dr.page_source</span></div><div class="line">		element = WebDriverWait(dr, <span class="number">2</span>).until(</div><div class="line">			EC.presence_of_element_located((By.XPATH, xpath_exp))</div><div class="line">		<span class="keyword">print</span> element.text</div><div class="line">	<span class="keyword">finally</span>:</div><div class="line">		dr.quit()</div></pre></td></tr></table></figure></p>
 <p>上述代码中用到了<em>xpath</em>，后续章节会讲到。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><table>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结:"></a>总结:</h3><div class="table-container">
+<table>
 <thead>
 <tr>
 <th style="text-align:center">method</th>
@@ -473,6 +490,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 ]]></content>
     
     <summary type="html">

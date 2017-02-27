@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="并发编程,网络编程," />
+  <meta name="keywords" content="数学,leetcode,c++," />
 
 
 
@@ -86,36 +86,25 @@
 
 
 
-<meta name="description" content="Background今年暑假读CSAPP第12章并发编程时看到的一个demo
-这个demo不但涉及到了服务器的开发，也包括了并发编程和网络编程相关知识
-Preface一个服务器必须能够同时服务两个或两个以上的客户端，为了满足这一要求，有以下几种方案
+<meta name="description" content="在LeetCode上面有一道Easy题，是sqrt(int x)，即求整数x的平方根。目前比较通用的一个方法就是采用牛顿迭代法来求平方根，它又被称为牛顿- 拉弗森方法，该方法主要思想就是 切线是曲线的线性逼近  。本文大致结构分为两部分，第一部分阐述牛顿迭代法的数学原理，第二部分简单说明如何在求平方根这一问题上应用牛顿迭代法，最后是一个简单总结。
 
-父进程接受监听描述符，子进程处理连接描述符
-父进程accept以后fork一个子进程，父进程接着accept
-子进程负责处理这个fd(file de">
+牛顿迭代法多数方程不存在求根公式，因此求精确根非">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于预线程化的并发服务器">
-<meta property="og:url" content="http://yoursite.com/2016/09/27/prethreaded-server/index.html">
+<meta property="og:title" content="用牛顿迭代法求平方根">
+<meta property="og:url" content="http://yoursite.com/2017/02/27/NewtonIterationMethod/index.html">
 <meta property="og:site_name" content="yjp's tictoc">
-<meta property="og:description" content="Background今年暑假读CSAPP第12章并发编程时看到的一个demo
-这个demo不但涉及到了服务器的开发，也包括了并发编程和网络编程相关知识
-Preface一个服务器必须能够同时服务两个或两个以上的客户端，为了满足这一要求，有以下几种方案
+<meta property="og:description" content="在LeetCode上面有一道Easy题，是sqrt(int x)，即求整数x的平方根。目前比较通用的一个方法就是采用牛顿迭代法来求平方根，它又被称为牛顿- 拉弗森方法，该方法主要思想就是 切线是曲线的线性逼近  。本文大致结构分为两部分，第一部分阐述牛顿迭代法的数学原理，第二部分简单说明如何在求平方根这一问题上应用牛顿迭代法，最后是一个简单总结。
 
-父进程接受监听描述符，子进程处理连接描述符
-父进程accept以后fork一个子进程，父进程接着accept
-子进程负责处理这个fd(file de">
-<meta property="og:image" content="http://yoursite.com/2016/09/27/prethreaded-server/prethreaded_organization.png">
-<meta property="og:updated_time" content="2016-09-29T04:24:14.000Z">
+牛顿迭代法多数方程不存在求根公式，因此求精确根非">
+<meta property="og:image" content="http://yoursite.com/2017/02/27/NewtonIterationMethod/NewtonIteration.png">
+<meta property="og:image" content="http://yoursite.com/2017/02/27/NewtonIterationMethod/runtime.png">
+<meta property="og:updated_time" content="2017-02-27T03:04:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="基于预线程化的并发服务器">
-<meta name="twitter:description" content="Background今年暑假读CSAPP第12章并发编程时看到的一个demo
-这个demo不但涉及到了服务器的开发，也包括了并发编程和网络编程相关知识
-Preface一个服务器必须能够同时服务两个或两个以上的客户端，为了满足这一要求，有以下几种方案
+<meta name="twitter:title" content="用牛顿迭代法求平方根">
+<meta name="twitter:description" content="在LeetCode上面有一道Easy题，是sqrt(int x)，即求整数x的平方根。目前比较通用的一个方法就是采用牛顿迭代法来求平方根，它又被称为牛顿- 拉弗森方法，该方法主要思想就是 切线是曲线的线性逼近  。本文大致结构分为两部分，第一部分阐述牛顿迭代法的数学原理，第二部分简单说明如何在求平方根这一问题上应用牛顿迭代法，最后是一个简单总结。
 
-父进程接受监听描述符，子进程处理连接描述符
-父进程accept以后fork一个子进程，父进程接着accept
-子进程负责处理这个fd(file de">
-<meta name="twitter:image" content="http://yoursite.com/2016/09/27/prethreaded-server/prethreaded_organization.png">
+牛顿迭代法多数方程不存在求根公式，因此求精确根非">
+<meta name="twitter:image" content="http://yoursite.com/2017/02/27/NewtonIterationMethod/NewtonIteration.png">
 
 
 
@@ -136,10 +125,10 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2016/09/27/prethreaded-server/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/02/27/NewtonIterationMethod/"/>
 
 
-  <title> 基于预线程化的并发服务器 | yjp's tictoc </title>
+  <title> 用牛顿迭代法求平方根 | yjp's tictoc </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -312,7 +301,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
             
             
               
-                基于预线程化的并发服务器
+                用牛顿迭代法求平方根
               
             
           </h1>
@@ -324,8 +313,8 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-27T20:08:29+08:00" content="2016-09-27">
-              2016-09-27
+            <time itemprop="dateCreated" datetime="2017-02-27T10:59:22+08:00" content="2017-02-27">
+              2017-02-27
             </time>
           </span>
 
@@ -338,7 +327,19 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/编程/" itemprop="url" rel="index">
+                  <a href="/categories/数学/" itemprop="url" rel="index">
+                    <span itemprop="name">数学</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/数学/编程/" itemprop="url" rel="index">
                     <span itemprop="name">编程</span>
                   </a>
                 </span>
@@ -354,8 +355,8 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/09/27/prethreaded-server/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/27/prethreaded-server/" itemprop="commentsCount"></span>
+                <a href="/2017/02/27/NewtonIterationMethod/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/27/NewtonIterationMethod/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -365,7 +366,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
 
           
           
-             <span id="/2016/09/27/prethreaded-server/" class="leancloud_visitors" data-flag-title="基于预线程化的并发服务器">
+             <span id="/2017/02/27/NewtonIterationMethod/" class="leancloud_visitors" data-flag-title="用牛顿迭代法求平方根">
                &nbsp; | &nbsp;
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -387,49 +388,41 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
       
 
       
-        <h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>今年暑假读CSAPP第12章并发编程时看到的一个demo</p>
-<p>这个demo不但涉及到了服务器的开发，也包括了并发编程和网络编程相关知识</p>
-<h2 id="Preface"><a href="#Preface" class="headerlink" title="Preface"></a>Preface</h2><p>一个服务器必须能够同时服务两个或两个以上的客户端，为了满足这一要求，有以下几种方案</p>
+        <p>在LeetCode上面有一道Easy题，是sqrt(int x)，即求整数x的平方根。目前比较通用的一个方法就是采用牛顿迭代法来求平方根，它又被称为牛顿- 拉弗森方法，该方法主要思想就是 <strong>切线是曲线的线性逼近</strong>  。本文大致结构分为两部分，第一部分阐述牛顿迭代法的数学原理，第二部分简单说明如何在求平方根这一问题上应用牛顿迭代法，最后是一个简单总结。</p>
+<hr>
+<h2 id="牛顿迭代法"><a href="#牛顿迭代法" class="headerlink" title="牛顿迭代法"></a>牛顿迭代法</h2><p>多数方程不存在求根公式，因此求精确根非常困难，甚至不可能，从而寻找方程的近似根就显得特别重要。</p>
+<h3 id="几何-代数推导"><a href="#几何-代数推导" class="headerlink" title="几何-代数推导"></a>几何-代数推导</h3><p>已知曲线$f(x)$，在$(x_n,f(x<em>n))$点作切线，交$x$轴于$x</em>{n+1}$点，接着在$(x<em>{n+1},f(x</em>{n+1}))$点作切线交$x$轴于$x_{n+2}$点，图像如下：</p>
+<img src="/2017/02/27/NewtonIterationMethod/NewtonIteration.png" alt="牛顿迭代法" title="牛顿迭代法">
+<p>显然，点$x_n$处的切线方程为$y=f(x_n)+f’(x_n)(x-x<em>n)$，所以容易得到: $x</em>{n+1}=x_{n}-\frac{f(x<em>n)}{f’(x</em>{n})}$，求出点$x<em>{n+1}$的值后，和上面一样的步骤，可以得到过点$(x</em>{n+1},f(x<em>{n+1}))$的切线方程，于是又可以得到点$x</em>{n+2}$d的值，这样不断迭代下去，直至无限逼近零点（即曲线$f(x)$与$x$轴的交点）。</p>
+<p>这种方法直觉上是对的，但是这里缺乏严格的数学证明，但这个其实已经被证明，来看看收敛的充分条件：</p>
+<blockquote>
+<p>若$f$二阶可导，那么在待求的零点$x$周围存在一个区域，只要起始点$x_0$位于这个邻近区间内，那么牛顿-拉弗森方法必定收敛。</p>
+</blockquote>
+<h3 id="和泰勒级数的关系"><a href="#和泰勒级数的关系" class="headerlink" title="和泰勒级数的关系"></a>和泰勒级数的关系</h3><p>用牛顿迭代法解非线性方程，是把非线性方程$f(x)=0$线性化的一种近似方法。为什么这么说呢？这就要提起泰勒级数了(泰勒大法好啊，这辈子都会记住，毕竟在这儿栽过跟头)，我们把$f(x)$在点$x_0$的某邻域内展开成泰勒级数：</p>
+<p>$f(x)=f(x_0)+f’(x_0)(x-x_0)+\frac{f’’(x_0)(x-x_0)^2}{2!}+···+\frac{f^{(n)}(x_0)(x-x_0)^n}{n!}+R_n(x)$</p>
+<p>取其线性部分，也就是泰勒展开的前两项，并令其等于0，即$f(x_0)+f’(x_0)(x-x_0)=0$，以此作为非线性方程$f(x)=0$的近似方程，若一阶导数存在，且不为零（因为要做分母），则其解为$x_1=x_0-\frac{f(x_0)}{f’(x_0)}$，于是我们便得到了关于牛顿-拉弗森的一个迭代关系式：</p>
+<p>$x_{n+1}=x_n-\frac{f(x_n)}{f’(x_n)}$</p>
+<p>可以发现，这个迭代公式和我们之前通过几何图推导出来的完全一致，这里要注意的是最后求出的零点并不是精确值，而是一个近似解，但是我们可以无限逼近精确值，这和极限的思想一个道理。</p>
+<hr>
+<h2 id="求平方根"><a href="#求平方根" class="headerlink" title="求平方根"></a>求平方根</h2><p>前面简单的讲了牛顿迭代法的数学原理，如果有兴趣，可以<a href="http://www.matongxue.com/madocs/205.html#/madoc" target="_blank" rel="external">点这里</a>去仔细阅读关于牛顿迭代法更深层的本质，这里不再赘述。</p>
+<p>有了这个利器，求平方根就非常简单了，高次方程的根其实也可以借此法求解（但是对函数特性有要求，二次函数可以收敛，这里不必担心）。假如我们要求$\sqrt{10}$，那怎么做呢？</p>
+<blockquote>
+<p><strong>步骤:</strong></p>
 <ul>
-<li>父进程接受监听描述符，子进程处理连接描述符<ul>
-<li>父进程accept以后fork一个子进程，父进程接着accept</li>
-<li>子进程负责处理这个fd(file descriptor)</li>
-<li>代码实现在<a href="http://www.martinbroadhurst.com/source/forked-server.c.html" target="_blank" rel="external">这里</a></li>
+<li>令$x=\sqrt{10}$，则有方程$x^2-10=0$;</li>
+<li>令$f(x)=x^2-10$，显然我们要求的就是曲线$f(x)$与$x$轴的交点;</li>
+<li>随便给一个初值$x<em>0$，根据$x</em>{n+1}=x_n-\frac{f(x_n)}{f’(x_n)}$这一迭代公式，可以计算出$x_1$，$x_2$…，那计算到什么时候停止呢？看下面：</li>
+<li>计算$x$的增量的绝对值，即$|\Delta{x}|=|x_{n+1}-x_n|=|\frac{f(x_n)}{f’(x_n)}|$，根据题目要求的精度$p$，我们可以设定当$|\Delta{x}|&lt;p$时便停止迭代，计算中止;</li>
+<li>此时得到的$x<em>{n+1}$便为方程的根，即$x</em>{n+1}=\sqrt{10}$.</li>
 </ul>
-</li>
-<li>通过I/O多路复用技术实现并发<ul>
-<li>网络客户端发起连接请求</li>
-<li>等待数据到达服务器</li>
-<li>代码实现在<a href="http://csapp.cs.cmu.edu/2e/ics2/code/conc/select.chttp://csap.cs.cmu.edu/2e/ics2/code/conc/select.c" target="_blank" rel="external">这里</a></li>
-</ul>
-</li>
-<li>基于多线程实现并发服务器</li>
-</ul>
-<p>以上3个方案从理论上来说都可以满足一个服务器同时服务多个客户端的需求，但是从工业的角度来讲，都不大现实。拿第一个方案来说，不现实的三个原因如下：</p>
-<ul>
-<li>每来一个连接就fork一个子进程，开销会很大，在linux系统下，调用fork不会发生地址空间COW(copy on write)，但是会复制父进程的页表。</li>
-<li>进程调度器压力过大。当并发量很大时，系统里有很多的进程，那么绝大部分时间将会花在决定哪一个是下一个运行进程以及上下文切换。</li>
-<li>内存的消耗。父子进程之间需要IPC，而高并发下的IPC所带来的overhead也不可忽略。</li>
-</ul>
-<p>将进程换成线程，虽然可以解决fork产生的问题，但是依旧无法处理调度压力和内存开销的麻烦。然而采用固定数量的线程（线程池）是一个非常不错的选择，这就是下面要提到的“预线程并发”模型。</p>
-<h2 id="Body"><a href="#Body" class="headerlink" title="Body"></a>Body</h2><p>我们使用下图所示的生产者-消费者模型来来降低为每一个新客户端创建一个线程而导致的开销。服务器是由<code>一个主线程</code>和<code>一组工作线程</code>构成的。</p>
-<ul>
-<li>主线程不断地接受来自客户端的连接请求，并将得到的连接描述符放在一个<code>有限缓冲区</code>中</li>
-<li>每一个工作者线程反复地从共享缓冲区中取出描述符来为客户端服务，然后等待下一个fd</li>
-</ul>
-<img src="/2016/09/27/prethreaded-server/prethreaded_organization.png" alt="The Architecture" title="The Architecture">
-<p>为了实现这一目标，我们首先需要开发一个SBUF包，它是用来构造生产者-消费者程序的。SBUF操作类型为sbuf_t的有限缓冲区，SBUF包的头文件如下(sbuf.h)</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> __SBUF_H__</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> __SBUF_H__</span></div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"csapp.h"</span></span></div><div class="line"></div><div class="line"><span class="comment">/* $begin sbuft */</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</div><div class="line">    <span class="keyword">int</span> *buf;          <span class="comment">/* Buffer array */</span>         </div><div class="line">    <span class="keyword">int</span> n;             <span class="comment">/* Maximum number of slots */</span></div><div class="line">    <span class="keyword">int</span> front;         <span class="comment">/* buf[(front+1)%n] is first item */</span></div><div class="line">    <span class="keyword">int</span> rear;          <span class="comment">/* buf[rear%n] is last item */</span></div><div class="line">    <span class="keyword">sem_t</span> mutex;       <span class="comment">/* Protects accesses to buf */</span></div><div class="line">    <span class="keyword">sem_t</span> slots;       <span class="comment">/* Counts available slots */</span></div><div class="line">    <span class="keyword">sem_t</span> items;       <span class="comment">/* Counts available items */</span></div><div class="line">&#125; <span class="keyword">sbuf_t</span>;</div><div class="line"><span class="comment">/* $end sbuft */</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_init</span><span class="params">(<span class="keyword">sbuf_t</span> *sp, <span class="keyword">int</span> n)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_deinit</span><span class="params">(<span class="keyword">sbuf_t</span> *sp)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">sbuf_insert</span><span class="params">(<span class="keyword">sbuf_t</span> *sp, <span class="keyword">int</span> item)</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">sbuf_remove</span><span class="params">(<span class="keyword">sbuf_t</span> *sp)</span></span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">/* __SBUF_H__ */</span></span></div></pre></td></tr></table></figure>
-<p>项目存放在一个动态分配的n项整数数组中，front和rear索引值记录该数组中的第一项和最后一项。三个信号量同步对缓冲区的访问，mutex信号量提供互斥的缓冲区访问，slots和items信号量分别记录空槽位和可用项目的数量。</p>
-<p>demo的全部代码在<a href="http://csapp.cs.cmu.edu/2e/ics2/code/conc/echoservert_pre.c" target="_blank" rel="external">这里</a>。</p>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>虽说这个demo与之前三种方案相比较已经有了很大的提升，但是在工业中依旧不可使用，因为一个完整的服务器所需要考虑的内容远远不止这些，有兴趣的可以去读读Nginx的代码。其实编写事件驱动程序并不只有I/O多路复用这一种方法，上面这个小demo实际上也是一个事件驱动服务器，带有主线程和工作者线程的简单状态机。</p>
-<ul>
-<li>主线程有两种状态（“等待连接请求”和“等待可用的缓冲区槽位”）</li>
-<li>两个I/O事件（“连接请求到达”和“缓冲区槽位变为可用”）</li>
-<li>两个转换（“接受连接请求”和“插入缓冲区项目”）</li>
-<li>每个工作者线程有一个状态（“等待可用的缓冲项目”），一个I/O事件（“缓冲区项目可用”）和一个转换（“取出缓冲区项目”）</li>
-</ul>
-<h2 id="Future"><a href="#Future" class="headerlink" title="Future"></a>Future</h2><p>关于CS专业，看完书如果不动手其实很难真正理解或者容易遗忘，所以我打算在后续阶段开发一个toyd（玩具式服务器），相对比较完整，支持静态/动态内容，服务器架构采用线程池以及事件驱动和非阻塞I/O。以此来学以致用~</p>
+</blockquote>
+<h3 id="程序的实现"><a href="#程序的实现" class="headerlink" title="程序的实现"></a>程序的实现</h3><p>有了上述的基本分析后，就很容易写出代码了，采用c++编写如下，当然这里贴出的代码是对整数求平方根，不过对浮点数此法亦是可行的，只需更改一下精度即可。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">mySqrt</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span>(x&lt;<span class="number">0</span>)&#123;</div><div class="line">            <span class="keyword">return</span> <span class="number">0x80000000</span>; <span class="comment">//x为负时，返回int的最小值</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(x&gt;<span class="number">1</span>)&#123;</div><div class="line">            <span class="keyword">double</span> value_curr = x/<span class="number">2</span>;</div><div class="line">            <span class="keyword">double</span> value_next = <span class="number">0.0</span>;</div><div class="line">            <span class="keyword">double</span> precise = <span class="number">0.9</span>;</div><div class="line">            <span class="keyword">double</span> diff = <span class="number">1.0</span>;</div><div class="line">            <span class="keyword">while</span>(diff &gt; precise)&#123;</div><div class="line">                value_next = (value_curr + x/value_curr)*<span class="number">0.5</span>;</div><div class="line">                diff = <span class="built_in">abs</span>(value_curr - value_next);</div><div class="line">                value_curr = value_next;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">int</span>(value_next);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> x; <span class="comment">// 0 or 1</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h3 id="效率"><a href="#效率" class="headerlink" title="效率"></a>效率</h3><p>在采用牛顿迭代法之前，我用一个类似于二分的思想撸了一个求平方根的方法（仅适用于正整数），运行效率还是相当的差，在这里也贴出比较愚的代码。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Solution &#123;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">mySqrt</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</div><div class="line">        <span class="keyword">long</span> right = x;</div><div class="line">        <span class="keyword">long</span> left = <span class="number">0</span>;</div><div class="line">        <span class="keyword">long</span> median = (right+left) / <span class="number">2</span>;</div><div class="line">        <span class="built_in">map</span>&lt;<span class="keyword">int</span>,<span class="keyword">bool</span>&gt; mp;</div><div class="line">        <span class="keyword">if</span>(x&lt;<span class="number">0</span>)&#123;</div><div class="line">            <span class="keyword">return</span> <span class="number">0x80000000</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(x&gt;<span class="number">1</span>)&#123;</div><div class="line">            <span class="keyword">while</span>(<span class="number">1</span>)&#123;</div><div class="line">                <span class="keyword">if</span>(median*median &lt; x)&#123;</div><div class="line">                    mp[median] = <span class="literal">true</span>;</div><div class="line">                    left = median;</div><div class="line">                    median = (right+left)/<span class="number">2</span>;</div><div class="line">                    <span class="keyword">if</span>(mp[median])&#123;</div><div class="line">                        <span class="keyword">return</span> median;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">else</span> <span class="keyword">if</span>(median*median &gt; x)&#123;</div><div class="line">                    right = median;</div><div class="line">                    median = (right+left)/<span class="number">2</span>;</div><div class="line">                    <span class="keyword">if</span>(mp[median])&#123;</div><div class="line">                        <span class="keyword">return</span> median;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">else</span>&#123;</div><div class="line">                    <span class="keyword">return</span> median;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> x; <span class="comment">// 0 or 1</span></div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>两种方法的运行效率相差很大，在同一测试集上跑，牛顿迭代法运行时间是3ms，二分思想(暂且就这么叫吧)是45ms，显然牛顿迭代法比二分思想的效率高达15倍，真是不知道比它高到哪里去了^_^。</p>
+<p>贴一张关于两种方法的效率对比图<br><img src="/2017/02/27/NewtonIterationMethod/runtime.png" alt="Efficiency comparison" title="Efficiency comparison"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title=" 总结"></a> 总结</h2><p>本文先简要阐述了牛顿迭代法的原理，再将其和泰勒级数的关系理了一下，最后着重说了一下如何利用牛顿迭代法求解平方根。当然，牛顿迭代法的用途主要是用来求解非线性方程的，而平方根只是其中一个特例，比如三次方、四次方程等等都可以用来求解。</p>
 
       
     </div>
@@ -468,9 +461,11 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
       
         <div class="post-tags">
           
-            <a href="/tags/并发编程/" rel="tag">#并发编程</a>
+            <a href="/tags/数学/" rel="tag">#数学</a>
           
-            <a href="/tags/网络编程/" rel="tag">#网络编程</a>
+            <a href="/tags/leetcode/" rel="tag">#leetcode</a>
+          
+            <a href="/tags/c/" rel="tag">#c++</a>
           
         </div>
       
@@ -479,17 +474,13 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/21/spider-js/" rel="next" title="爬虫系列（1）——解析JS">
-                <i class="fa fa-chevron-left"></i> 爬虫系列（1）——解析JS
+              <a href="/2016/11/01/leetcode-Container-With-Most-Water/" rel="next" title="leetcode-[Container With Most Water]">
+                <i class="fa fa-chevron-left"></i> leetcode-[Container With Most Water]
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/29/blog-thinking/" rel="prev" title="日常随感之学习思路">
-                日常随感之学习思路 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -515,8 +506,8 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/09/27/prethreaded-server/"
-           data-title="基于预线程化的并发服务器" data-url="http://yoursite.com/2016/09/27/prethreaded-server/">
+      <div class="ds-thread" data-thread-key="2017/02/27/NewtonIterationMethod/"
+           data-title="用牛顿迭代法求平方根" data-url="http://yoursite.com/2017/02/27/NewtonIterationMethod/">
       </div>
     
   </div>
@@ -652,7 +643,7 @@ Preface一个服务器必须能够同时服务两个或两个以上的客户端�
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Preface"><span class="nav-number">2.</span> <span class="nav-text">Preface</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Body"><span class="nav-number">3.</span> <span class="nav-text">Body</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Future"><span class="nav-number">5.</span> <span class="nav-text">Future</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#牛顿迭代法"><span class="nav-number">1.</span> <span class="nav-text">牛顿迭代法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#几何-代数推导"><span class="nav-number">1.1.</span> <span class="nav-text">几何-代数推导</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#和泰勒级数的关系"><span class="nav-number">1.2.</span> <span class="nav-text">和泰勒级数的关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求平方根"><span class="nav-number">2.</span> <span class="nav-text">求平方根</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#程序的实现"><span class="nav-number">2.1.</span> <span class="nav-text">程序的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#效率"><span class="nav-number">2.2.</span> <span class="nav-text">效率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text"> 总结</span></a></li></ol></div>
             
           </div>
         </section>
